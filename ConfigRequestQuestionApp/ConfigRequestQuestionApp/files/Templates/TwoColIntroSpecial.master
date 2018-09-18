@@ -1,0 +1,30 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/files/Templates/ColSingle.master" AutoEventWireup="true" CodeFile="TwoColIntroSpecial.master.cs" Inherits="files_Templates_TwoColIntroSpecial" %>
+
+ <asp:Content ID="beforeColSingle" ContentPlaceHolderID="BeforeColSingle" Runat="Server">
+            <div class="specialBox">
+                <asp:ContentPlaceHolder ID="SpecialBoxContent" runat="server">
+
+                </asp:ContentPlaceHolder>
+            </div>
+
+
+            <div class="pageIntro">
+                    <asp:ContentPlaceHolder ID="PageIntroContent" runat="server">
+
+                    </asp:ContentPlaceHolder>
+            </div>
+        </asp:Content>
+        <asp:Content ID="ColSingle" ContentPlaceHolderID="ColSingle" Runat="Server">
+
+            <div class="column left">
+                    <asp:ContentPlaceHolder ID="LeftColContent" runat="server">
+
+                    </asp:ContentPlaceHolder>
+            </div>
+            <div class="column right">
+                    <asp:ContentPlaceHolder ID="RightColContent" runat="server">
+
+                    </asp:ContentPlaceHolder>
+            </div>
+
+        </asp:Content>

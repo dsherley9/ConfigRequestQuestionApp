@@ -1,0 +1,32 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/files/Templates/ColSingle.master" AutoEventWireup="true" CodeFile="ThreeColIntroBanner.master.cs" Inherits="files_Templates_ThreeColIntroBanner" %>
+
+        <asp:Content ID="beforeColSingle" ContentPlaceHolderID="BeforeColSingle" Runat="Server">
+            <div class="bannerImage">
+                 <asp:ContentPlaceHolder ID="BannerImageContent" runat="server">
+                        Banner Image
+                 </asp:ContentPlaceHolder>
+            </div>  
+            <div class="pageIntro">
+                    <asp:ContentPlaceHolder ID="PageIntroContent" runat="server">
+
+                    </asp:ContentPlaceHolder>
+            </div>
+        </asp:Content>
+        <asp:Content ID="ColSingle" ContentPlaceHolderID="ColSingle" Runat="Server">
+
+            <div class="column ThreeLeft">
+                    <asp:ContentPlaceHolder ID="LeftColContent" runat="server">
+
+                    </asp:ContentPlaceHolder>
+            </div>
+            <div class="column ThreeMiddle">
+                <asp:ContentPlaceHolder ID="MiddleColContent" runat="server">
+
+                </asp:ContentPlaceHolder>
+            </div>
+            <div class="column ThreeRight">
+                    <asp:ContentPlaceHolder ID="RightColContent" runat="server">
+
+                    </asp:ContentPlaceHolder>
+            </div>
+        </asp:Content>

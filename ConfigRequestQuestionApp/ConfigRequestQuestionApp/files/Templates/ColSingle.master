@@ -1,0 +1,30 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/files/Templates/MasterSitePage.master" AutoEventWireup="true" CodeFile="ColSingle.master.cs" Inherits="files_Templates_ColSingle" %>
+
+
+<asp:Content ID="styles" ContentPlaceHolderID="headerStyles" Runat="Server">
+       <style>
+           .columnlink{
+               display:block;
+           }
+       </style>
+</asp:Content>
+
+
+<asp:Content ID="contentContainer" ContentPlaceHolderID="contentContainerPlaceHolder" Runat="Server">
+    <div id="columnbody">
+            <asp:ContentPlaceHolder ID="StylesContent" runat="server">
+
+            </asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="ScriptsContent" runat="server">
+
+            </asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="BeforeColSingle" runat="server">
+
+            </asp:ContentPlaceHolder>
+        <div class="column single">
+            <asp:ContentPlaceHolder ID="ColSingle" runat="server">
+
+            </asp:ContentPlaceHolder>
+        </div>
+    </div>
+</asp:Content>

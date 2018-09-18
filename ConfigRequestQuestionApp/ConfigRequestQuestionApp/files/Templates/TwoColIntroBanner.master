@@ -1,0 +1,40 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/files/Templates/ColSingle.master" AutoEventWireup="true" CodeFile="TwoColIntroBanner.master.cs" Inherits="files_Templates_TwoColIntroBanner" %>
+
+        <asp:Content ID="beforeColSingle" ContentPlaceHolderID="BeforeColSingle" Runat="Server">
+            
+            <div class="bannerImage">
+
+                 <asp:ContentPlaceHolder ID="BannerImageContent" runat="server">
+                        Banner Image
+                 </asp:ContentPlaceHolder>
+
+            </div>          
+            <div class="pageIntro">
+
+                    <asp:ContentPlaceHolder ID="PageIntroContent" runat="server">
+                        Intro
+                    </asp:ContentPlaceHolder>
+
+            </div>
+       
+        </asp:Content>
+        <asp:Content ID="ColSingle" ContentPlaceHolderID="ColSingle" Runat="Server">
+
+            <div class="column left">
+                    
+                <asp:ContentPlaceHolder ID="LeftColContent" runat="server">
+                        Left
+                    
+                </asp:ContentPlaceHolder>
+            
+            </div>
+            <div class="column right">
+                    
+                <asp:ContentPlaceHolder ID="RightColContent" runat="server">
+                        Right
+                    
+                </asp:ContentPlaceHolder>
+           
+            </div>
+
+        </asp:Content>
