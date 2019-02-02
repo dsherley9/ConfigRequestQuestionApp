@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - CRQApp</title>
+    @Styles.Render("~/Content/css")
+    @*@Scripts.Render("~/bundles/modernizr")*@
+    @Styles.Render("~/Content/bootstrap")
+</head>
+<body>
+    <header class="global-head">
+        <div class="container-fullwidth global-head-inner">
+            <div id="header-row" class="row align-items-center">
+                <div class="col-2">
+                    <img class="global-logo" src="//webcdn.cerner.com/Content/Images/cernerLogo_FC_T.png" alt="Cerner Logo" />
+                </div>
+                <div id="inspire-quote" class="col-3">
+                    <span class="font-italic">
+                        "Healthcare is too important to stay the same."
+                    </span>
+                </div>
+                <div class="col-7 user-info">
+                    <div class="row">
+                        <div class="col-8" align="center">
+                            @*Placeholder for notifications.*@
+                        </div>
+                        <div class="col-4" align="right">
+                            <div class="btn-group">
+                                <button id="global-user-dropdown" type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img id="user-img" src="https://assets3.thrillist.com/v1/image/2547068/size/tmg-article_tall;jpeg_quality=20.jpg" class="img-thumbnail rounded-circle" />
+                                    <span id="user-name">Dalton Sherley</span>
+                                </button>
+                                <div class="dropdown-menu global-user-dropdown-menu">
+                                    <a class="dropdown-item" href="#">My Requests</a>
+                                    <a class="dropdown-item" href="#">Settings</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav id="global-nav" class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item dropdown position-static">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        My Requests
+                    </a>
+                    <div class="dropdown-menu w-100" aria-labelledby="navbarDropdown">
+                        <div class="row">
+                            <div class="col-5">
+                                <span class="font-weight-bold nav-drop-head-item">Requests</span>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">All Requests</a>
+                                <a class="dropdown-item" href="#">Open Requests</a>
+                                <a class="dropdown-item" href="#">Closed Requests</a>
+                            </div>
+                            <div class="col-5">
+                                <span class="font-weight-bold nav-drop-head-item">Recent Requests</span>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">SR 12345 - New XYZ Project</a>
+                                <a class="dropdown-item" href="#">SR 67891 - New ABC Project</a>
+                                <a class="dropdown-item" href="#">SR 15975 - New RTY Project</a>
+                            </div>
+                            <div class="col-2">
+                                <div class="row h-100 align-items-center">
+                                    <div class="col-12" align="center">
+                                        <button id="new-request-btn" class="btn btn-primary" onclick="window.location.href='/Builds'">New Request</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+    </header>
+
+
+
+    @*<nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="/">Cerner Config Request</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Builds">Builds</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>*@
+
+
+    <div id="main-container" class="container-fullwidth body-content">
+        @RenderBody()
+    </div>
+
+
+
+    <footer id="global-footer" class="footer">
+        <div class="container-fullwidth">
+            <div class="row">
+                <div class="col-3">
+
+                </div>
+                <div class="col-6" align="center">
+                    <span class="text-muted">&copy; @DateTime.Now.Year - ConfigRequestQuestionApp</span>
+                </div>
+                <div class="col-3">
+
+                </div>
+
+            </div>
+            
+        </div>
+    </footer>
+
+
+
+
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/popper")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/flatpickrscripts")
+    @Scripts.Render("~/bundles/custscripts")
+    <!-- flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
+    @RenderSection("scripts", required: false)
+
+
+    @*<footer>
+            <hr />
+            <p>&copy; @DateTime.Now.Year - ConfigRequestQuestionApp</p>
+        </footer>*@
+</body>
+</html>

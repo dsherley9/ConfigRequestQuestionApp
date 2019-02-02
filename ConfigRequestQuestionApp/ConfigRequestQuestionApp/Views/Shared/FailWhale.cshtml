@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Error";
+}
+
+
+<h2>404: Page Not Found</h2>
+@if (@Request.Params["aspxerrorpath"] != null)
+{
+    <p>URL you are trying to navigate to is invalid. <strong>'@Request.Params["aspxerrorpath"]' </strong>Please check the URL, and try again.</p>
+}
+else
+{
+    <p>URL you hare trying to navigate to is invalid or has been moved. <strong>'@Request.Url'</strong> Please review the URL and make any necessary changes. </p>
+
+
+    
+}
+
+
+
+
+

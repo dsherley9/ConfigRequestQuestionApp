@@ -1,0 +1,209 @@
+﻿@using ConfigRequestQuestionApp.Models;
+
+@*@{
+        ViewBag.Title = "Build Item Selected";
+    }*@
+
+
+<div id="build-form-container" class="view-body-container row position-static">
+    <div class="col-9 col-centered view-body-inner">
+        <form method="post" action="FILELOCATION FOR THE POST">
+            <div id="build-form-header" class="row build-form-header">
+                <div class="col-12">
+                    <h3>Build Form: @Model.BuildName </h3>
+
+                    <div class="progress progress-bar-striped">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="build-form" class="row build-form">
+                <div id="build-question-list" class="col-3 scrollbar">
+                    <ul class="list-group">
+                        @foreach (Question item in Model.QuestionList)
+                        {//d-none when ready
+                            <li class="list-group-item @item.QuestionID d-none"> @item.QuestionTitle</li>
+                        }
+                        <li class="list-group-item f-sum d-none"> Summary</li>
+                        <li class="list-group-item f-thanks d-none"> Complete</li>
+                    </ul>
+                    <div class="force-overflow"></div>
+                </div>
+                <div id="build-question" class="col-9">
+                    <div class="row form-question-content">
+                        <div id="build-form-question" class="col-12">
+                            <div class="row @Model.FirstQID question-wrapper">
+                                @foreach (Question item in Model.QuestionList)
+                                {
+                                    <div class="col-12 question-inner @item.QuestionID @item.QTypeMeaning d-none">
+                                        <div class="row question-form-title">
+                                            <h2>@item.QuestionTitle</h2>
+                                        </div>
+                                        <div class="row question-form-input">
+                                            <div class="col-12">
+                                                @if (item.QTypeMeaning == "MULTISELECT")
+                                                {
+                                                    foreach (var opt in item.QOptions)
+                                                    {
+                                                        if (item.IsConditional)
+                                                        {
+                                                            if (item.IsRequired)
+                                                            {
+                                                                <div class="form-check">
+                                                                    <input id="@opt.ChildID" class="@item.QuestionID Conditional Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="" required />
+                                                                    <label class="form-check-label" for="@opt.ChildID">@opt.LabelText</label>
+                                                                </div>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="form-check">
+                                                                    <input id="@opt.ChildID" class="@item.QuestionID Conditional Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="" />
+                                                                    <label class="form-check-label" for="@opt.ChildID">@opt.LabelText</label>
+                                                                </div>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (item.IsRequired)
+                                                            {
+                                                                <div class="form-check">
+                                                                    <input id="@opt.ChildID" class="@item.QuestionID Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="" required />
+                                                                    <label class="form-check-label" for="@opt.ChildID">@opt.LabelText</label>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="form-check">
+                                                                    <input id="@opt.ChildID" class="@item.QuestionID Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="" required />
+                                                                    <label class="form-check-label" for="@opt.ChildID">@opt.LabelText</label>
+                                                                </div>
+                                                            }
+                                                        }
+
+                                                    }
+                                                }
+                                                else if (item.QTypeMeaning == "YESNO")
+                                                {
+                                                    if (item.IsRequired)
+                                                    {
+                                                        <div class="form-check">
+                                                            <input id="y-@item.ChildQID" class="@item.QuestionID Input-Control form-check-input" type="radio" name="@item.QuestionID" value="" required />
+                                                            <label class="form-check-label" for="y-@item.ChildQID">Yes</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input id="n-@item.ChildQID" class="@item.QuestionID Input-Control form-check-input" type="radio" name="@item.QuestionID" value="" required />
+                                                            <label class="form-check-label" for="n-@item.ChildQID">No</label>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="form-check">
+                                                            <input id="y-@item.ChildQID" class="@item.QuestionID Input-Control form-check-input" type="radio" name="@item.QuestionID" value="" />
+                                                            <label class="form-check-label" for="y-@item.ChildQID">Yes</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input id="n-@item.ChildQID" class="@item.QuestionID Input-Control form-check-input" type="radio" name="@item.QuestionID" value="" />
+                                                            <label class="form-check-label" for="n-@item.ChildQID">No</label>
+                                                        </div>
+                                                    }
+                                                }
+                                                else if (item.QTypeMeaning == "RADIOBUTTONS")
+                                                {
+                                                    foreach (QuestionOptions opt in item.QOptions)
+                                                    {
+                                                        if (item.IsRequired)
+                                                        {
+                                                            <div class="form-check">
+                                                                <input id="@item.ChildQID" class="@item.QuestionID Input-Control form-check-input" type="radio" name="@item.QuestionID" value="" required />
+                                                                <label class="form-check-label" for="@opt.ChildID">@opt.LabelText</label>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="form-check">
+                                                                <input id="@item.ChildQID" class="@item.QuestionID Input-Control form-check-input" type="radio" name="@item.QuestionID" value="" required />
+                                                                <label class="form-check-label" for="@opt.ChildID">@opt.LabelText</label>
+                                                            </div>
+                                                        }
+                                                    }
+                                                }
+                                                else if (item.QTypeMeaning == "FREETEXT")
+                                                {
+                                                    <div>
+                                                        <textarea id="@item.ChildQID" class="@item.QuestionID @item.QTypeMeaning Input-Control" name="@item.QuestionID" value="" rows="10" cols="80"></textarea>
+                                                    </div>
+
+                                                }
+                                                else if (item.QTypeMeaning == "DATETIME")
+                                                {
+                                                    <div>
+                                                        <input id="@item.ChildQID" class="@item.QuestionID f-datepicker Input-Control" type="text" />
+                                                    </div>
+                                                }
+                                                else if (item.QTypeMeaning == "USERDRIVENLIST")
+                                                {
+                                                    <div>
+                                                        <span id="@item.ChildQID" class="@item.QuestionID Input-Control">Just a placeholder for a user driven list. :)</span>
+                                                    </div>
+                                                }
+                                                else if (item.QTypeMeaning == "DROPDOWN")
+                                                {
+                                                    <div>
+                                                        <span id="@item.ChildQID" class="@item.QuestionID Input-Control">Placeholder for DROPDOWN</span>
+                                                    </div>
+                                                }
+                                                else if (item.QTypeMeaning == "INPUTBOX")
+                                                {
+                                                    <div>
+                                                        <input id="@item.ChildQID" class="@item.QuestionID Input-Control" type="text" placeholder="..." />
+                                                    </div>
+                                                }
+                                                else if (item.QTypeMeaning == "FILEUPLOAD")
+                                                {
+                                                    <div>
+                                                        <span id="@item.ChildQID" class="@item.QuestionID Input-Control">Placeholder for file upload</span>
+                                                    </div>
+
+                                                    @*<div id="dZUpload" class="dropzone">
+                                                            <div class="dz-default dz-message"></div>
+                                                        </div>*@
+                                                }
+
+                                                @*<button class="NextQuestion">Next Question</button><button class="PreviousQuestion">Previous Question</button>*@
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                }
+                                <div class="question-inner f-sum d-none">
+                                    <div class="f-sum">
+                                        <span id="f-thanks" class="dummy Input-Control d-none"></span>
+                                        <h2>Summary</h2>
+                                    </div>
+                                </div>
+
+                                <div class="question-inner f-thanks d-none">
+                                    <div class="f-thanks">
+                                        <h2>Thank you!</h2>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row form-question-options">
+                                <div class="col-12" align="right">
+                                    <button class="btn btn-outline-secondary submit-btn d-none" type="submit">Submit</button>
+                                    <button class="btn btn-outline-secondary sav-btn" type="button">Save</button>
+                                    <button class="btn btn-primary prev-btn"  type="button">Previous Question</button>
+                                    <button class="btn btn-primary next-btn"  type="button">Next Question</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
