@@ -184,8 +184,9 @@ namespace ConfigRequestQuestionApp.Models
                 questionList.Remove(xQ);
                 --parentCnt;
 
-                //If there is remaining parents
-                if ((parentCnt) > 0)
+                //If there is remaining parents and it's a conditional question, then queue the remaining parent questions for the other path(s). 
+                //Otherwise it's a question with options that's not conditional and the first object should have everything
+                if ((parentCnt > 0) && xQ.IsConditional == true)
                 {
                     //Add rest of parent objects to queue
                     for (int i = 0; i < parentCnt; i++)
@@ -235,8 +236,9 @@ namespace ConfigRequestQuestionApp.Models
                     }
 
 
-                    //If there is remaining children, it's a conditional question that needs to be queued until this path is finished
-                    if (xChildCnt > 0)
+                    //If there is remaining children and it's a conditional question, then queue the remaining question for the other path(s). 
+                    //Otherwise it's a question with options that's not conditional and the first object should have everything
+                    if (xChildCnt > 0 && yQ.IsConditional == true)
                     {
                         //Add rest of objects to queue
                         for (int i = 0; i < xChildCnt; i++)
