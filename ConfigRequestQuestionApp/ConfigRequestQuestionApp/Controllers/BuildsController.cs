@@ -169,75 +169,78 @@ namespace ConfigRequestQuestionApp.Controllers
                 //Load into reader
                 SqlDataReader dr = cmd.ExecuteReader();
 
+                int questionID = 0;
+
                 while (dr.Read())
                 {
                     qItem = new Question();
 
-                    qItem.QuestionID = int.Parse(dr[dr.GetOrdinal("question_id")].ToString());
-                    qItem.QuestionTitle = dr[dr.GetOrdinal("question_title")].ToString();
+                    questionID = int.Parse(dr[dr.GetOrdinal("question_id")].ToString());
 
-                    qItem.ParentQID = int.Parse(dr[dr.GetOrdinal("parent_q_id")].ToString());
-                    qItem.ChildQID = int.Parse(dr[dr.GetOrdinal("child_q_id")].ToString());
+                    //If question already exists, it must be for options
+                    if (versionSelected.QuestionList.Any(x => x.QuestionID == questionID))
+                    {
+                            QuestionOptions qOpt = new QuestionOptions();
+                            qOpt.QuestionID = questionID;
+                            qOpt.QOptID = int.Parse(dr[dr.GetOrdinal("q_opt_id")].ToString());
+                            qOpt.LabelText = dr[dr.GetOrdinal("q_opt_label")].ToString();
+                            qOpt.ChildID = int.Parse(dr[dr.GetOrdinal("child_q_id")].ToString());
+                            qOpt.Sequence = int.Parse(dr[dr.GetOrdinal("seq")].ToString());
 
-                    qItem.IsActive = dr.GetBoolean(dr.GetOrdinal("active_ind"));
+                            versionSelected.QuestionList.Where(x => x.QuestionID == questionID).FirstOrDefault().QOptions.Add(qOpt);
+                            versionSelected.QuestionList.Where(x => x.QuestionID == questionID).FirstOrDefault().ReSequenceOptions();
+                    }
+                    else
+                    {//New question
 
-                    qItem.IsConditional = dr.GetBoolean(dr.GetOrdinal("conditional_ind"));
-                    qItem.ConditionalQOptID = int.Parse(dr[dr.GetOrdinal("conditional_q_opt_id")].ToString()); // Good idea? -> qItem.conditionalQOptID = dr.GetInt32(dr.GetOrdinal("conditional_q_opt_id"));
+                        qItem.QuestionID = questionID;
+                        qItem.QuestionTitle = dr[dr.GetOrdinal("question_title")].ToString();
+                        qItem.ParentQID = int.Parse(dr[dr.GetOrdinal("parent_q_id")].ToString());
+                        qItem.ChildQID = int.Parse(dr[dr.GetOrdinal("child_q_id")].ToString());
+                        qItem.IsActive = dr.GetBoolean(dr.GetOrdinal("active_ind"));
+                        qItem.IsConditional = dr.GetBoolean(dr.GetOrdinal("conditional_ind"));
 
+                        switch (qItem.IsConditional)
+                        {
+                            case true:
+                                qItem.ConditionalQOptID = int.Parse(dr[dr.GetOrdinal("q_opt_id")].ToString()); // Good idea? -> qItem.conditionalQOptID = dr.GetInt32(dr.GetOrdinal("conditional_q_opt_id"));
+                                break;
+                            default:
+                                qItem.ConditionalQOptID = 0;
+                                break;
+                        }
 
                         QuestionOptions qOpt = new QuestionOptions();
-                        qOpt.QuestionID = qItem.QuestionID;
-                        qOpt.QOptID = qItem.ConditionalQOptID;
+                        qOpt.QuestionID = questionID;
+                        qOpt.QOptID = int.Parse(dr[dr.GetOrdinal("q_opt_id")].ToString());
                         qOpt.LabelText = dr[dr.GetOrdinal("q_opt_label")].ToString();
                         qOpt.ChildID = qItem.ChildQID;
-
-                        //If options for question already exist, add to existing list.
-                        if (versionSelected.QuestionList.SelectMany(x => x.QOptions).Any(x => x.QuestionID == qItem.QuestionID))
-                        {
-                            List<Question> tempQList = new List<Question>();
-                            List<QuestionOptions> tempOpt = new List<QuestionOptions>();
-                            tempQList = versionSelected.QuestionList.Where(x => x.QuestionID == qItem.QuestionID).ToList();
-                            tempOpt = tempQList.Select(x => x.QOptions).FirstOrDefault();
-
-                            //Add to existing list
-                            tempOpt.Add(qOpt);
-
-                            foreach (Question item in tempQList)
-                            {
-                                item.QOptions = tempOpt;
-                            }
-
-                            //Add to new item
-                            qItem.QOptions = tempOpt;
-                        }
-                        else
-                        { //First option for question 
-                            qItem.QOptions.Add(qOpt);
-                        }
-                    
+                        qOpt.Sequence = int.Parse(dr[dr.GetOrdinal("seq")].ToString());
+                        qItem.QOptions.Add(qOpt);
+                        qItem.ReSequenceOptions();
 
 
-                    qItem.IsBuildInlay = dr.GetBoolean(dr.GetOrdinal("_build_inlay_ind"));
-                    qItem.BuildInlayID = int.Parse(dr[dr.GetOrdinal("inlay_q_build_version_id")].ToString());
-
-                    qItem.QTypeMeaning = dr[dr.GetOrdinal("meaning")].ToString();
-
-
-                    //options
-                    qItem.IsRequired = dr.GetBoolean(dr.GetOrdinal("opt_required"));
-                    qItem.HasOptNA = dr.GetBoolean(dr.GetOrdinal("opt_not_applicable"));
-                    qItem.HasOptOther = dr.GetBoolean(dr.GetOrdinal("opt_other"));
-                    qItem.HasWhatsThis = dr.GetBoolean(dr.GetOrdinal("opt_whats_this"));
-                    qItem.WhatsThisTxt = dr[dr.GetOrdinal("txt_whats_this")].ToString();
-                    qItem.HasAlert = dr.GetBoolean(dr.GetOrdinal("opt_alerts"));
-                    qItem.AlertTxt = dr[dr.GetOrdinal("txt_alerts")].ToString();
+                        qItem.IsBuildInlay = dr.GetBoolean(dr.GetOrdinal("_build_inlay_ind"));
+                        qItem.BuildInlayID = int.Parse(dr[dr.GetOrdinal("inlay_q_build_version_id")].ToString());
+                        qItem.QTypeMeaning = dr[dr.GetOrdinal("meaning")].ToString();
 
 
-                    qItem.QUpdt = dr.GetDateTime(dr.GetOrdinal("updt_dt_tm")); //DateTime.Parse(dr[11].ToString());
-                    qItem.QUpdtID = int.Parse(dr[dr.GetOrdinal("updt_id")].ToString());
-                    qItem.QUpdtName = dr[dr.GetOrdinal("updt_name")].ToString();
+                        //Question Settings
+                        qItem.IsRequired = dr.GetBoolean(dr.GetOrdinal("opt_required"));
+                        qItem.HasOptNA = dr.GetBoolean(dr.GetOrdinal("opt_not_applicable"));
+                        qItem.HasOptOther = dr.GetBoolean(dr.GetOrdinal("opt_other"));
+                        qItem.HasWhatsThis = dr.GetBoolean(dr.GetOrdinal("opt_whats_this"));
+                        qItem.WhatsThisTxt = dr[dr.GetOrdinal("txt_whats_this")].ToString();
+                        qItem.HasAlert = dr.GetBoolean(dr.GetOrdinal("opt_alerts"));
+                        qItem.AlertTxt = dr[dr.GetOrdinal("txt_alerts")].ToString();
 
-                    versionSelected.QuestionList.Add(qItem);
+                        qItem.QUpdt = dr.GetDateTime(dr.GetOrdinal("updt_dt_tm")); //DateTime.Parse(dr[11].ToString());
+                        qItem.QUpdtID = int.Parse(dr[dr.GetOrdinal("updt_id")].ToString());
+                        qItem.QUpdtName = dr[dr.GetOrdinal("updt_name")].ToString();
+
+                        versionSelected.QuestionList.Add(qItem);
+
+                    }
                 }
 
                 dbCon.Close();

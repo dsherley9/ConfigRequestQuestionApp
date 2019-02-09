@@ -114,6 +114,7 @@ function Tabular() {
             //var optionSelect = new Array();
 
             var nextQID = 0;
+            var queueID = 0;
 
             //Determine the next QID
             if ($('.question-inner.cur-q .question-form-input').find(".Input-Control").hasClass("Conditional")) {
@@ -122,7 +123,8 @@ function Tabular() {
                 //For each control that is checked, push to queue and selected options
                 $($('.question-inner.cur-q .question-form-input').find(".Input-Control").get().reverse()).each(function () {
                     if ($(this).is(":checked")) {
-                        stackQueue.push($(this).attr('ID').toString());
+                        queueID = this.className.match(/childQ-(\d+)?/)[1];
+                        stackQueue.push(queueID);
                     }
                 });
 
@@ -133,7 +135,12 @@ function Tabular() {
 
                 //Get Next Direct QID
                 if (!$('.question-inner.cur-q').hasClass("f-sum")) {
-                    nextQID = $('.question-inner.cur-q .question-form-input').find(".Input-Control").attr('ID').toString();
+                    //childQ-X = Child Question
+                    $($('.question-inner.cur-q .question-form-input').find(".Input-Control").get()).each(function () {
+                        nextQID = this.className.match(/childQ-(\d+)?/)[1];
+                    });
+                } else {
+                    nextQID = 0;
                 }
               
             }
@@ -166,8 +173,7 @@ function Tabular() {
                             ShowNextQuestion("f-thanks");
                         } else {
                             //go to summary
-                            HideCurrentQuestion();
-                            loadSummaryPage();
+                            HideCurrentQuestion(); 
                             ShowNextQuestion("f-sum");
                             
                         }
@@ -182,6 +188,7 @@ function Tabular() {
                     } else {
                         //go to summary
                         HideCurrentQuestion();
+                        loadSummaryPage();
                         ShowNextQuestion("f-sum");
                     }
                 }                
@@ -237,10 +244,24 @@ function Tabular() {
         does not return anything - writes out to the f-sum class the results
     */
     function loadSummaryPage() {
+        var htmlValue = "<ul>"
         $(".question-inner.in-pth").each(function () {
-            //Load each item of in path into a li tag
+            htmlValue += "<li>" + $(this).find(".question-form-title h2").text() + "</li>";
+            htmlValue += "<ul>"
+            $(this).find("input[type=checkbox]").each(function () {
+                if ($(this).is(":checked")) {
+                    htmlValue += "<li>" + $(this).val() + "</li>"
+                }  
+            })
+
+            htmlValue += "</ul>"
 
         });
+        htmlValue += "</ul>"
+
+        $(htmlValue).insertAfter($('.f-sum').find('h2'));
+
+      
     }
 
 

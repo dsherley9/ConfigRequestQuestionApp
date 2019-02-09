@@ -177,5 +177,21 @@ namespace ConfigRequestQuestionApp.Models
         }
 
         #endregion
+
+        #region Methods
+
+        public void ReSequenceOptions()
+        {
+            this.qOptions = this.qOptions.OrderBy(x => x.Sequence).ToList();
+        }
+
+        public void ReSequenceOptionsDesc()
+        {
+            this.qOptions = this.qOptions.OrderByDescending(x => x.Sequence).ToList();
+        }
+
+
+        #endregion
+
     }
 }

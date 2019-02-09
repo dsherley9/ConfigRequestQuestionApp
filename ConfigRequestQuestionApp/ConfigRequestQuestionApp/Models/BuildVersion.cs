@@ -145,150 +145,131 @@ namespace ConfigRequestQuestionApp.Models
                 int maxLoop = 10000;
 
                 //START
-                tempStructList = new List<Question>();
-                List<QuestionQueue> queueStructList = new List<QuestionQueue>();
-
+                List<Question> questionStructure = new List<Question>();
+                Stack<QuestionQueue> queuedQuestions = new Stack<QuestionQueue>();
+                QuestionQueue queueItem = new QuestionQueue();
+                
                 //Parent Object
                 Question xQ = new Question();
-
-                //Child Object
-                Question yQ = new Question();
-
-                //Question Queue Item
-                QuestionQueue queueItem = new QuestionQueue();
 
                 //Other Variables
                 bool isComplete = false;
 
                 //Count of Parent Objects
-                int parentCnt;
-                int xChildCnt;
-                int xParentID;
-                int xChildID;
-                int xQuestionID;
+                int xParentID = 0;
+                int xChildID = 0;
+                int xQuestionID = 0;
                 int buildLevel = 1; //start on first level
 
                 //get the first root/parent in list
-                xQ = questionList.Where(x => x.QuestionID == firstQID).FirstOrDefault();
+                xQ = this.questionList.Where(x => x.QuestionID == this.firstQID).FirstOrDefault();
 
                 //If no root/parent found, exit
-                if (xQ == null) { return; }  
-
-                //Total root/parent found, there can more than 1 because there is a question for each parents conditional child
-                parentCnt = questionList.Where(x => x.QuestionID == firstQID).Count();
+                if (xQ == null) { return; }
 
                 //Add root/parent to temp structure
-                tempStructList.Add(xQ);
+                questionStructure.Add(xQ);
 
                 //Remove single parent that was added to structure from question list
-                questionList.Remove(xQ);
-                --parentCnt;
-
-                //If there is remaining parents and it's a conditional question, then queue the remaining parent questions for the other path(s). 
-                //Otherwise it's a question with options that's not conditional and the first object should have everything
-                if ((parentCnt > 0) && xQ.IsConditional == true)
-                {
-                    //Add rest of parent objects to queue
-                    for (int i = 0; i < parentCnt; i++)
-                    {
-                        queueItem = new QuestionQueue();
-                        queueItem.Level = buildLevel;
-                        queueItem.QQueue = questionList.Where(x => x.QuestionID == firstQID).FirstOrDefault();
-
-                        //Add to queued list
-                        queueStructList.Add(queueItem);
-
-                        //Remove from question list since it's queued
-                        questionList.Remove(queueItem.QQueue);
-                    }
-                }
+                this.questionList.Remove(xQ);
 
                 //increase build level to go to all children
-                ++buildLevel; 
+                ++buildLevel;
+
+                if (xQ.IsConditional)
+                    {   //queue up conditional children
+                        for (int i = (xQ.QOptions.Count()-1); i >= 0 ; i--)
+                        {
+                            if (!(xQ.QOptions[i].ChildID == 0))
+                            {
+                                queueItem = new QuestionQueue();
+                                queueItem.Level = buildLevel;
+                                queueItem.QQueue = this.questionList.Where(x => x.QuestionID == xQ.QOptions[i].ChildID).FirstOrDefault();
+                                queuedQuestions.Push(queueItem);
+                                this.questionList.Remove(queueItem.QQueue);
+                            }
+                        }
+
+                        queueItem = queuedQuestions.Pop();
+                        xQ = queueItem.QQueue;
+                        buildLevel = queueItem.Level;
+                    }
+                else
+                {   //direct child
+                    xQ = this.questionList.Where(x => x.QuestionID == xQ.ChildQID).FirstOrDefault();
+                }
 
 
                 //This on determines the rest of the structure
-
                 while (!(isComplete))
                 {
-                    //Set this questions information
-                    xParentID = xQ.ParentQID;
-                    xQuestionID = xQ.QuestionID; 
-                    xChildID = xQ.ChildQID;
 
-                    //How many children are there of current question
-                    xChildCnt = questionList.Where(x => x.QuestionID == xChildID).Count();
-
-                    //Get the first child
-                    yQ = new Question();
-                    yQ = questionList.Where(x => x.QuestionID == xChildID).FirstOrDefault();
-
-
-                    //If the child is not null, add to temp structure
-                    if (!(yQ == null))
+                    //If parent is not null
+                    if (!(xQ == null))
                     {
+                        //Set this questions information
+                        xParentID = xQ.ParentQID;
+                        xQuestionID = xQ.QuestionID;
+                        xChildID = xQ.ChildQID;
+
                         //add it to temp
-                        tempStructList.Add(yQ);
+                        questionStructure.Add(xQ);
 
                         //remove from questionlist
-                        questionList.Remove(yQ);
-                        --xChildCnt;
-                    }
+                        this.questionList.Remove(xQ);
 
+                        if (xQ.IsConditional)
+                        {   //queue up conditional children
+                            for (int i = (xQ.QOptions.Count()-1); i >= 0; i--)
+                            {
+                                if (!(xQ.QOptions[i].ChildID == 0))
+                                {
+                                    queueItem = new QuestionQueue();
+                                    queueItem.Level = buildLevel;
+                                    queueItem.QQueue = this.questionList.Where(x => x.QuestionID == xQ.QOptions[i].ChildID).FirstOrDefault();
+                                    queuedQuestions.Push(queueItem);
+                                    this.questionList.Remove(queueItem.QQueue);
+                                }
+                            }
 
-                    //If there is remaining children and it's a conditional question, then queue the remaining question for the other path(s). 
-                    //Otherwise it's a question with options that's not conditional and the first object should have everything
-                    if (xChildCnt > 0 && yQ.IsConditional == true)
-                    {
-                        //Add rest of objects to queue
-                        for (int i = 0; i < xChildCnt; i++)
-                        {
-                            queueItem = new QuestionQueue();
-                            queueItem.Level = buildLevel;
-                            queueItem.QQueue = questionList.Where(x => x.QuestionID == xChildID).FirstOrDefault();
-                            queueStructList.Add(queueItem);
-                            questionList.Remove(queueItem.QQueue);
+                            queueItem = queuedQuestions.Pop();
+                            xQ = queueItem.QQueue;
+                            buildLevel = queueItem.Level;
                         }
-                    }
-
-
-                    //Move to next question, or complete
-                    xQ = new Question();
-
-                    if (!(xChildID == 0))
+                        else
+                        {   //direct child
+                            xQ = this.questionList.Where(x => x.QuestionID == xQ.ChildQID).FirstOrDefault();
+                            ++buildLevel;
+                        }
+                }
+                else
+                {
+                    //check if done
+                    if (queuedQuestions.Any())
                     {
-                        //Not done with path, keep looping
-                        xQ.ChildQID = yQ.ChildQID;
-                        ++buildLevel;
+                        queueItem = queuedQuestions.Pop();
+                        xQ = queueItem.QQueue;
+                        buildLevel = queueItem.Level;
                     }
                     else
                     {
-                        //check if done
-                        if (queueStructList.Any())
-                        {
-                            queueItem = new QuestionQueue();
-                            queueItem = queueStructList.LastOrDefault();
-                            xQ = queueItem.QQueue;
-                            buildLevel = queueItem.Level;
-                            queueStructList.Remove(queueItem);
-                        }
-                        else
-                        {
-                            isComplete = true;
-                        }
+                        isComplete = true;
                     }
+                }
+
+
 
                     //Max Loop
                     ++loopCnt;
 
                     if (loopCnt > maxLoop)
                     {
-                        throw new Exception("Tree Max Loop Error:" + loopCnt.ToString() + " Loops");
+                        throw new Exception("Tree Max Loop Error: " + loopCnt.ToString() + " Loops");
                     }
                 }
 
-                questionList = new List<Question>();
-                questionList = tempStructList.ToList();
+                this.questionList = new List<Question>();
+                this.questionList = questionStructure.ToList();
 
             }
             catch (Exception)
@@ -297,7 +278,7 @@ namespace ConfigRequestQuestionApp.Models
             }
 
 
-        }
+}
 
         #endregion
 
