@@ -90,20 +90,15 @@ $("#myTable tbody tr").on("click", function (e) {
 
 var stackQueue = new Array();
 var previousQueue = 0;
+var firstQID = 0
 
 function Tabular() {
 
     //Set first question as current
-    $('.question-inner').first().removeClass('d-none').addClass('cur-q in-pth');
+    firstQID = $('.question-inner').first().attr('class').match(/QID-(\d+)?/)[1];
+    ShowQuestion(firstQID);
 
-    //Unhide first question
-    $('#build-question-list ul li').first().removeClass('d-none').addClass('cur-q in-pth active');
-
-    ////Disable previous button since first question
-    //$('button.PreviousQuestion').first().prop('disabled', true);
-
-
-    //Next Question Click
+    //BIND Next Question Click
     $('button.next-btn').on("click", function () {
 
         //Validate input
@@ -134,7 +129,7 @@ function Tabular() {
             } else {//Direct relationship path, only one child
 
                 //Get Next Direct QID
-                if (!$('.question-inner.cur-q').hasClass("f-sum")) {
+                if (!$('.question-inner.cur-q').hasClass("QID-f-sum")) {
                     //childQ-X = Child Question
                     $($('.question-inner.cur-q .question-form-input').find(".Input-Control").get()).each(function () {
                         nextQID = this.className.match(/childQ-(\d+)?/)[1];
@@ -148,7 +143,7 @@ function Tabular() {
             //if not equal to 0, there is still a child to go to
             if (!(nextQID == 0)) {
                 HideCurrentQuestion();
-                ShowNextQuestion(nextQID);
+                ShowQuestion(nextQID);
             }
             else {
 
@@ -163,33 +158,33 @@ function Tabular() {
 
                     if (!(nextQID == 0)) {
                         HideCurrentQuestion();
-                        ShowNextQuestion(nextQID);
+                        ShowQuestion(nextQID);
                     } else {
                         //alert("No More Items in the list");
 
-                        if ($('.question-inner.cur-q').hasClass("f-sum")) {
+                        if ($('.question-inner.cur-q').hasClass("QID-f-sum")) {
                             //go to thank you
                             HideCurrentQuestion();
-                            ShowNextQuestion("f-thanks");
+                            ShowQuestion("f-thanks");
                         } else {
                             //go to summary
                             HideCurrentQuestion(); 
-                            ShowNextQuestion("f-sum");
+                            ShowQuestion("f-sum");
                             
                         }
                     }
                 }
                 else {
                     //alert("No More Items in the list");
-                    if ($('.question-inner.cur-q').hasClass("f-sum")) {
+                    if ($('.question-inner.cur-q').hasClass("QID-f-sum")) {
                         //go to thank you
                         HideCurrentQuestion();
-                        ShowNextQuestion("f-thanks");
+                        ShowQuestion("f-thanks");
                     } else {
                         //go to summary
                         HideCurrentQuestion();
                         loadSummaryPage();
-                        ShowNextQuestion("f-sum");
+                        ShowQuestion("f-sum");
                     }
                 }                
             }
@@ -202,10 +197,15 @@ function Tabular() {
         $("#build-question-list ul li.cur-q").removeClass('cur-q active');
     }
 
-    function ShowNextQuestion(nQID) {
+    function ShowQuestion(nQID) {
         //Display Next Question and Set as Current
-        $("#build-question-list ul li." + nQID).removeClass('d-none').addClass('cur-q in-pth active');
-        $('.question-inner.' + nQID).removeClass('d-none').addClass('cur-q in-pth');
+        $("#build-question-list ul li.QID-" + nQID).removeClass('d-none').addClass('cur-q in-pth active');
+        $('.question-inner.QID-' + nQID).removeClass('d-none').addClass('cur-q in-pth');
+
+        //if on parent, disable previous button
+        if (nQID == firstQID) {$('button.prev-btn').attr('disabled', true);}else {$('button.prev-btn').attr('disabled', false);}
+        //if on end, disable button
+        if (nQID == "f-thanks") {$('button.next-btn').attr('disabled', true);} else {$('button.next-btn').attr('disabled', false)}
     }
 
     function ValidateClientQuestionInput() {
@@ -241,7 +241,7 @@ function Tabular() {
     /*
         Load in all items that are in the path to the summar page with the results they gave
         No values needing to be passed in
-        does not return anything - writes out to the f-sum class the results
+        does not return anything - writes out to the QID-f-sum class the results
     */
     function loadSummaryPage() {
         var htmlValue = "<ul>"
@@ -259,14 +259,28 @@ function Tabular() {
         });
         htmlValue += "</ul>"
 
-        $(htmlValue).insertAfter($('.f-sum').find('h2'));
+        $(htmlValue).insertAfter($('.QID-f-sum').find('h2'));
 
       
     }
 
 
     $('button.prev-btn').on("click", function () {
-        alert("enter previous");
+
+        var prevQ;
+
+        if ($('.question-inner.cur-q').hasClass("QID-f-thanks")) {
+            prevQ = "f-sum";   
+        }
+        else
+        {
+            prevQ = $("#build-question-list ul li.cur-q").closest('li').prevAll(".in-pth").attr('class').match(/QID-(\d+)?/)[1];
+        }
+         
+        //var prevQ = $("#build-question-list ul li.cur-q").attr('class').match(/parentQ-(\d+)?/)[1];
+        HideCurrentQuestion();
+        ShowQuestion(prevQ);
+        //alert("enter previous" + prevQ);
     });
 }
 

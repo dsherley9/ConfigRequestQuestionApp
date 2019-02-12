@@ -23,10 +23,10 @@
                     <ul class="list-group">
                         @foreach (Question item in Model.QuestionList)
                         {//d-none when ready
-                            <li class="list-group-item @item.QuestionID d-none"> @item.QuestionTitle</li>
+                            <li class="list-group-item parentQ-@item.ParentQID QID-@item.QuestionID d-none"> @item.QuestionTitle</li>
                         }
-                        <li class="list-group-item f-sum d-none"> Summary</li>
-                        <li class="list-group-item f-thanks d-none"> Complete</li>
+                        <li class="list-group-item QID-f-sum d-none"> Summary</li>
+                        <li class="list-group-item QID-f-thanks d-none"> Complete</li>
                     </ul>
                     <div class="force-overflow"></div>
                 </div>
@@ -36,7 +36,7 @@
                             <div class="row @Model.FirstQID question-wrapper">
                                 @foreach (Question item in Model.QuestionList)
                                 {
-                                    <div class="col-12 question-inner @item.QuestionID @item.QTypeMeaning d-none">
+                                    <div class="col-12 question-inner QID-@item.QuestionID @item.QTypeMeaning d-none">
                                         <div class="row question-form-title">
                                             <h2>@item.QuestionTitle</h2>
                                         </div>
@@ -49,7 +49,7 @@
                                                             if (item.IsRequired)
                                                             {
                                                                 <div class="form-check">
-                                                                    <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID @item.QuestionID Conditional Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="@opt.QOptID" required />
+                                                                    <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID parentQ-@item.ParentQID QID-@item.QuestionID Conditional Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="@opt.QOptID" required />
                                                                     <label class="form-check-label" for="@item.QuestionID-@opt.QOptID">@opt.LabelText</label>
                                                                 </div>
 
@@ -57,7 +57,7 @@
                                                             else
                                                             {
                                                                 <div class="form-check">
-                                                                    <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID @item.QuestionID Conditional Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="@opt.QOptID" />
+                                                                    <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID parentQ-@item.ParentQID QID-@item.QuestionID Conditional Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="@opt.QOptID" />
                                                                     <label class="form-check-label" for="@item.QuestionID-@opt.QOptID">@opt.LabelText</label>
                                                                 </div>
                                                             }
@@ -70,14 +70,14 @@
                                                         if (item.IsRequired)
                                                         {
                                                             <div class="form-check">
-                                                                <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID @item.QuestionID Input-Control form-check-input" type="radio" name="@item.QuestionID" value="@opt.QOptID" required />
+                                                                <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID parentQ-@item.ParentQID QID-@item.QuestionID Input-Control form-check-input" type="radio" name="@item.QuestionID" value="@opt.QOptID" required />
                                                                 <label class="form-check-label" for="@item.QuestionID-@opt.QOptID">@opt.LabelText</label>
                                                             </div>
                                                         }
                                                         else
                                                         {
                                                             <div class="form-check">
-                                                                <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID @item.QuestionID Input-Control form-check-input" type="radio" name="@item.QuestionID" value="@opt.QOptID" required />
+                                                                <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID parentQ-@item.ParentQID QID-@item.QuestionID Input-Control form-check-input" type="radio" name="@item.QuestionID" value="@opt.QOptID" required />
                                                                 <label class="form-check-label" for="@item.QuestionID-@opt.QOptID">@opt.LabelText</label>
                                                             </div>
                                                         }
@@ -86,38 +86,38 @@
                                                 else if (item.QTypeMeaning == "FREETEXT")
                                                 {
                                                     <div>
-                                                        <textarea id="@item.QuestionID" class="childQ-@item.ChildQID @item.QuestionID @item.QTypeMeaning Input-Control" name="@item.QuestionID" value="" rows="10" cols="80"></textarea>
+                                                        <textarea id="@item.QuestionID" class="childQ-@item.ChildQID parentQ-@item.ParentQID @item.QuestionID QID-@item.QTypeMeaning Input-Control" name="@item.QuestionID" value="" rows="10" cols="80"></textarea>
                                                     </div>
 
                                                 }
                                                 else if (item.QTypeMeaning == "DATETIME")
                                                 {
                                                     <div>
-                                                        <input id="@item.QuestionID" class="childQ-@item.ChildQID @item.QuestionID f-datepicker Input-Control" type="text" />
+                                                        <input id="@item.QuestionID" class="childQ-@item.ChildQID parentQ-@item.ParentQID QID-@item.QuestionID f-datepicker Input-Control" type="text" />
                                                     </div>
                                                 }
                                                 else if (item.QTypeMeaning == "USERDRIVENLIST")
                                                 {
                                                     <div>
-                                                        <span id="@item.QuestionID" class="childQ-@item.ChildQID @item.QuestionID Input-Control">Just a placeholder for a user driven list. :)</span>
+                                                        <span id="@item.QuestionID" class="childQ-@item.ChildQID parentQ-@item.ParentQID QID-@item.QuestionID Input-Control">Just a placeholder for a user driven list. :)</span>
                                                     </div>
                                                 }
                                                 else if (item.QTypeMeaning == "DROPDOWN")
                                                 {
                                                     <div>
-                                                        <span id="@item.QuestionID" class="childQ-@item.ChildQID @item.QuestionID Input-Control">Placeholder for DROPDOWN</span>
+                                                        <span id="@item.QuestionID" class="childQ-@item.ChildQID parentQ-@item.ParentQID QID-@item.QuestionID Input-Control">Placeholder for DROPDOWN</span>
                                                     </div>
                                                 }
                                                 else if (item.QTypeMeaning == "INPUTBOX")
                                                 {
                                                     <div>
-                                                        <input id="@item.QuestionID" class="childQ-@item.ChildQID @item.QuestionID Input-Control" type="text" placeholder="..." />
+                                                        <input id="@item.QuestionID" class="childQ-@item.ChildQID parentQ-@item.ParentQID QID-@item.QuestionID Input-Control" type="text" placeholder="..." />
                                                     </div>
                                                 }
                                                 else if (item.QTypeMeaning == "FILEUPLOAD")
                                                 {
                                                     <div>
-                                                        <span id="@item.QuestionID" class="childQ-@item.ChildQID @item.QuestionID Input-Control">Placeholder for file upload</span>
+                                                        <span id="@item.QuestionID" class="childQ-@item.ChildQID parentQ-@item.ParentQID QID-@item.QuestionID Input-Control">Placeholder for file upload</span>
                                                     </div>
 
                                                     @*<div id="dZUpload" class="dropzone">
@@ -131,14 +131,14 @@
 
                                     </div>
                                 }
-                                <div class="question-inner f-sum d-none">
+                                <div class="question-inner QID-f-sum d-none">
                                     <div class="f-sum">
                                         <span id="f-thanks" class="dummy Input-Control d-none"></span>
                                         <h2>Summary</h2>
                                     </div>
                                 </div>
 
-                                <div class="question-inner f-thanks d-none">
+                                <div class="question-inner QID-f-thanks d-none">
                                     <div class="f-thanks">
                                         <h2>Thank you!</h2>
                                     </div>
