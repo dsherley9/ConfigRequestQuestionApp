@@ -152,6 +152,12 @@ namespace ConfigRequestQuestionApp.Models
                 //Parent Object
                 Question xQ = new Question();
 
+                //Total Questions Cnt
+                int totalQuestionCnt = this.questionList.Count();
+
+                //Current Percent
+                double curPercent = 0.0;
+
                 //Other Variables
                 bool isComplete = false;
 
@@ -166,6 +172,9 @@ namespace ConfigRequestQuestionApp.Models
 
                 //If no root/parent found, exit
                 if (xQ == null) { return; }
+
+                //Initialize Percent Complete
+                xQ.PercentComplete = curPercent;
 
                 //Add root/parent to temp structure
                 questionStructure.Add(xQ);
@@ -211,6 +220,11 @@ namespace ConfigRequestQuestionApp.Models
                         xParentID = xQ.ParentQID;
                         xQuestionID = xQ.QuestionID;
                         xChildID = xQ.ChildQID;
+
+                        //CalculatePercent
+                        curPercent = (questionStructure.Count() + 1);
+                        curPercent = Math.Round(((curPercent / totalQuestionCnt) * 100),2);
+                        xQ.PercentComplete = curPercent;
 
                         //add it to temp
                         questionStructure.Add(xQ);

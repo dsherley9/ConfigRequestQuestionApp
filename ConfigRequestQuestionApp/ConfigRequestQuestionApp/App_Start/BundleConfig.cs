@@ -52,6 +52,7 @@ namespace ConfigRequestQuestionApp
                     //, "~/Custom_Scripts/Scripts/DataTables/datatables.js"
                     //, "~/Custom_Scripts/Scripts/DataTables/dataTables.material.min.js"
                     , "~/Custom_Scripts/Scripts/Dropzone/dropzone.js"
+                    , "~/Custom_Scripts/Scripts/jquery.scrollTo/jquery.scrollTo.min.js"
                 ));
 
 

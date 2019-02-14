@@ -98,6 +98,16 @@ function Tabular() {
     firstQID = $('.question-inner').first().attr('class').match(/QID-(\d+)?/)[1];
     ShowQuestion(firstQID);
 
+
+    //BIND Question Click
+    $('#build-question-list ul li').on("click", function () {
+        var directQID;
+        directQID = this.className.match(/QID-(\d+)?/)[1];
+        HideCurrentQuestion();
+        ShowQuestion(directQID);
+    });
+
+
     //BIND Next Question Click
     $('button.next-btn').on("click", function () {
 
@@ -205,7 +215,16 @@ function Tabular() {
         //if on parent, disable previous button
         if (nQID == firstQID) {$('button.prev-btn').attr('disabled', true);}else {$('button.prev-btn').attr('disabled', false);}
         //if on end, disable button
-        if (nQID == "f-thanks") {$('button.next-btn').attr('disabled', true);} else {$('button.next-btn').attr('disabled', false)}
+        if (nQID == "f-thanks") { $('button.next-btn').attr('disabled', true); } else { $('button.next-btn').attr('disabled', false) }
+
+        //Scroll to current question
+        $('#build-question-list').scrollTo($('#build-question-list ul li.cur-q'), 100);
+
+        //Update Percentage Complete
+        var percent = $('#build-question-list ul li.cur-q').attr('class').match(/PERC-(\d+\.?\d{0,9}|\.\d{1,9})?/)[1];
+
+        $("#build-form-progress-inner").css("width", percent + "%");
+        $("#build-form-progress-inner").attr("aria-valuenow", percent);
     }
 
     function ValidateClientQuestionInput() {

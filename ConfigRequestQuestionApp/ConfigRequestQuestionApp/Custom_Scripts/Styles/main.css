@@ -128,6 +128,11 @@ div#build-question-list {
     max-height: 100%;
 }
 
+    div#build-question-list ul li.list-group-item:hover {
+        cursor: pointer;
+        border-color: #00b894
+    }
+
 div#build-question {
     height: 100%;
     padding-left: 3vw;
