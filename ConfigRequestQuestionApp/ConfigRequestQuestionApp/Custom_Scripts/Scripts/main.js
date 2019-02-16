@@ -102,7 +102,15 @@ function Tabular() {
     //BIND Question Click
     $('#build-question-list ul li').on("click", function () {
         var directQID;
-        directQID = this.className.match(/QID-(\d+)?/)[1];
+
+        if ($(this).hasClass('QID-f-sum')){
+            directQID = "f-sum";
+        } else if ($(this).hasClass('QID-f-thanks')){
+            directQID = "f-thanks";
+        } else {
+            directQID = this.className.match(/QID-(\d+)?/)[1];
+        }
+        
         HideCurrentQuestion();
         ShowQuestion(directQID);
     });
@@ -127,14 +135,19 @@ function Tabular() {
 
                 //For each control that is checked, push to queue and selected options
                 $($('.question-inner.cur-q .question-form-input').find(".Input-Control").get().reverse()).each(function () {
+                    queueID = this.className.match(/childQ-(\d+)?/)[1];
                     if ($(this).is(":checked")) {
-                        queueID = this.className.match(/childQ-(\d+)?/)[1];
-                        stackQueue.push(queueID);
+                        if (!($("#build-question-list ul li.QID-" + queueID).hasClass("in-pth") || $.inArray(queueID, stackQueue) !==-1 )) {
+                            stackQueue.push(queueID);
+                        }
+                    } else {
+                        RemovePath(queueID);
                     }
+
                 });
 
                  //Get from queued, should always be one if within
-                nextQID = stackQueue.pop();
+                nextQID = stackQueue.length > 0 ? stackQueue.pop() : 0;
 
             } else {//Direct relationship path, only one child
 
@@ -169,37 +182,67 @@ function Tabular() {
                     if (!(nextQID == 0)) {
                         HideCurrentQuestion();
                         ShowQuestion(nextQID);
-                    } else {
-                        //alert("No More Items in the list");
-
-                        if ($('.question-inner.cur-q').hasClass("QID-f-sum")) {
-                            //go to thank you
-                            HideCurrentQuestion();
-                            ShowQuestion("f-thanks");
-                        } else {
-                            //go to summary
-                            HideCurrentQuestion(); 
-                            ShowQuestion("f-sum");
-                            
-                        }
-                    }
+                    } else { ValidateEndPath();}
                 }
-                else {
-                    //alert("No More Items in the list");
-                    if ($('.question-inner.cur-q').hasClass("QID-f-sum")) {
-                        //go to thank you
-                        HideCurrentQuestion();
-                        ShowQuestion("f-thanks");
-                    } else {
-                        //go to summary
-                        HideCurrentQuestion();
-                        loadSummaryPage();
-                        ShowQuestion("f-sum");
-                    }
-                }                
+                else {ValidateEndPath();}                
             }
         }
     });
+
+
+    function ValidateEndPath() {
+
+        var nextItems = $("#build-question-list ul li.cur-q").nextAll('li');
+
+        if (nextItems.hasClass('in-pth') &&
+                !(nextItems.filter('li.in-pth').first().hasClass('QID-f-sum')
+                ||nextItems.filter('li.in-pth').first().hasClass('QID-f-thanks'))
+            ) {
+            //alert("There is a next item in path.");
+            HideCurrentQuestion();
+            let QID = nextItems.closest('li.in-pth').attr('class').match(/QID-(\d+)?/)[1];
+            ShowQuestion(QID);
+        }
+        else {
+            if ($('.question-inner.cur-q').hasClass("QID-f-sum")) {
+                //go to thank you
+                HideCurrentQuestion();
+                ShowQuestion("f-thanks");
+            } else {
+                //go to summary
+                HideCurrentQuestion();
+                ShowQuestion("f-sum");
+
+            }
+        }
+    }
+
+    function RemovePath(QID) {
+        let childQ;
+        let stillQueuedIDX;
+
+        $("#build-question-list ul li.QID-" + QID).addClass('d-none').removeClass('in-pth');
+        $('.question-inner.QID-' + QID).addClass('d-none').removeClass('in-pth');
+
+        //if child in-pth, remove
+        $($('.question-inner.QID-' + QID + ' .question-form-input').find(".Input-Control").get()).each(function () {
+            childQ = this.className.match(/childQ-(\d+)?/)[1];
+
+                //Check if conditional path is queued, if 
+                stillQueuedIDX = $.inArray(childQ, stackQueue);
+
+                switch (stillQueuedIDX) {
+                    case -1: //<-not queued
+                        //check if in path
+                        if ($("#build-question-list ul li.QID-" + childQ).hasClass('in-pth')) {
+                            RemovePath(childQ);
+                        }
+                        break;
+                    default: //still queued
+                        stackQueue.splice(stillQueuedIDX, 1);
+                }
+        });
+    }
 
     function HideCurrentQuestion() {
         //Hide Current Question and Remove as Current
