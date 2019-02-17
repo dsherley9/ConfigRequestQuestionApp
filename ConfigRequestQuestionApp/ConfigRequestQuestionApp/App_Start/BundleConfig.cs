@@ -43,6 +43,7 @@ namespace ConfigRequestQuestionApp
                       //,"~/Custom_Scripts/Scripts/DataTables/dataTables.material.min.css"
                       //, "~/Custom_Scripts/Scripts/DataTables/material.min.css"
                       , "~/Custom_Scripts/Scripts/Dropzone/dropzone.css"
+                      , "~/Custom_Scripts/Scripts/vakata-jstree-bc5187e/dist/themes/default/style.min.css"
                       ));
 
             bundles.Add(new StyleBundle("~/bundles/custscripts").Include(
@@ -53,6 +54,7 @@ namespace ConfigRequestQuestionApp
                     //, "~/Custom_Scripts/Scripts/DataTables/dataTables.material.min.js"
                     , "~/Custom_Scripts/Scripts/Dropzone/dropzone.js"
                     , "~/Custom_Scripts/Scripts/jquery.scrollTo/jquery.scrollTo.min.js"
+                    , "~/Custom_Scripts/Scripts/vakata-jstree-bc5187e/dist/jstree.min.js"
                 ));
 
 

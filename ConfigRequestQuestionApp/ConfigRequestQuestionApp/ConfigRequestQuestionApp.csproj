@@ -258,6 +258,18 @@
     <Content Include="Custom_Scripts\Scripts\jquery.scrollTo\tests\WinMaxY-to-iframe-quirks.html" />
     <Content Include="Custom_Scripts\Scripts\main.js" />
     <Content Include="Custom_Scripts\Scripts\Popper\popper.min.js" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\jstree.js" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\jstree.min.js" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\themes\default-dark\32px.png" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\themes\default-dark\40px.png" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\themes\default-dark\style.css" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\themes\default-dark\style.min.css" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\themes\default-dark\throbber.gif" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\themes\default\32px.png" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\themes\default\40px.png" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\themes\default\style.css" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\themes\default\style.min.css" />
+    <Content Include="Custom_Scripts\Scripts\vakata-jstree-bc5187e\dist\themes\default\throbber.gif" />
     <Content Include="Custom_Scripts\Styles\main.css" />
     <Content Include="Custom_Scripts\Styles\old.css" />
     <Content Include="favicon.ico" />
@@ -350,6 +362,7 @@
     <Content Include="Views\Builds\Index.cshtml" />
     <Content Include="Views\Builds\Build.cshtml" />
     <Content Include="Views\Shared\FailWhale.cshtml" />
+    <Content Include="Views\Builds\ManageBuild.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

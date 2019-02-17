@@ -55,6 +55,7 @@ button#new-request-btn {
 div.view-body-container {
     height: 100%;
     background-color: #eff2f3;
+    overflow: auto;
 }
 
 div.view-body-inner{

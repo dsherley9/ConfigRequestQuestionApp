@@ -34,6 +34,7 @@ namespace ConfigRequestQuestionApp.Models
         private DateTime qUpdt;
         private string qUpdtName;
         private double percentComplete;
+        private int nodeLevel;
 
 
         #endregion
@@ -172,6 +173,12 @@ namespace ConfigRequestQuestionApp.Models
         {
             get { return percentComplete; }
             set { percentComplete = value; }
+        }
+
+        public int NodeLevel
+        {
+            get { return nodeLevel; }
+            set { nodeLevel = value; }
         }
 
 

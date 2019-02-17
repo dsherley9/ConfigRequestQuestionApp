@@ -42,17 +42,49 @@ $(document).ready(function () {
         }
     });
 
-
-
     //BIND Dropdowns
     $('body')
         .on('mouseenter mouseleave', '.dropdown', toggleDropdown)
         .on('click', '.dropdown-menu a', toggleDropdown);
 
-    //Initial Tabular Form
-    Tabular();
 
+    //Initial Tabular Form
+
+    if (window.location.href.indexOf("Builds/build/") > -1) {
+        BuildQuestionFormBind();
+    }
+
+    /*-----------------
+     TREE FUNCTIONS
+     -----------------*/
+
+    if (window.location.href.indexOf("/Builds/ManageBuild") > -1) {
+
+        var data = {};
+        data.versionID = 1;
+
+
+        $.ajax({
+            type: "POST",
+            url: "/Builds/GetBuildTree",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            dataType: "json",
+            success: function (result, status, xhr) {
+                $('#build-js-tree').jstree({
+                    'core': {
+                        'data': result
+                    }
+                });
+                //$('#json-troubleshoot').append(JSON.stringify(result));
+            },
+            error: function (xhr, status, error) {
+                $("#build-js-tree").html("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
+            }
+        });
+    }
 });
+
 
 
 //-----------------------------------------------//
@@ -92,7 +124,7 @@ var stackQueue = new Array();
 var previousQueue = 0;
 var firstQID = 0
 
-function Tabular() {
+function BuildQuestionFormBind() {
 
     //Set first question as current
     firstQID = $('.question-inner').first().attr('class').match(/QID-(\d+)?/)[1];

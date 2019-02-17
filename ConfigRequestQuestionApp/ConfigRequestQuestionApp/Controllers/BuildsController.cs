@@ -7,6 +7,7 @@ using ConfigRequestQuestionApp.Models;
 using System.Web.Configuration;
 using System.Data.SqlClient;
 using System.Data;
+using System.Web.Script.Serialization;
 
 namespace ConfigRequestQuestionApp.Controllers
 {
@@ -39,6 +40,24 @@ namespace ConfigRequestQuestionApp.Controllers
             LoadBuildByID(ID);
             versionSelected.BuildQuestionStructure();
             return View(versionSelected);
+        }
+
+        #endregion
+
+        #region Manage Builds
+
+        public ActionResult ManageBuild()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public string GetBuildTree(int versionID)
+        {
+            LoadBuildByID(versionID);
+            versionSelected.BuildQuestionStructure();
+            return versionSelected.BuildTreeJson;
         }
 
         #endregion

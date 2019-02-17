@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 
 namespace ConfigRequestQuestionApp.Models
 {
@@ -21,8 +22,9 @@ namespace ConfigRequestQuestionApp.Models
         private string vUpdtName;
         private List<Question> questionList;
 
-        //For Build Question Structure
-        private List<Question> tempStructList;
+        //For JSON Tree
+        private List<BuildJTree> _jsTree;
+        private string _buildTreeJson;
 
         #endregion
 
@@ -84,6 +86,21 @@ namespace ConfigRequestQuestionApp.Models
             set { questionList = value; }
         }
 
+
+        //For jsTree Formatted
+
+        public List<BuildJTree> JSTree
+        {
+            get { return _jsTree; }
+            set { _jsTree = value; }
+        }
+
+        public string BuildTreeJson
+        {
+            get { return _buildTreeJson; }
+            set { _buildTreeJson = value; }
+        }
+
         #endregion
 
         #region Constructor
@@ -91,6 +108,7 @@ namespace ConfigRequestQuestionApp.Models
         public BuildVersion()
         {
             questionList = new List<Question>();
+            _jsTree = new List<BuildJTree>();
         }
 
         #endregion
@@ -126,6 +144,38 @@ namespace ConfigRequestQuestionApp.Models
 
         #endregion
 
+        #region Nested Build JTree Class
+
+        public class BuildJTree
+        {
+            private string _id;
+
+            public string id
+            {
+                get { return _id; }
+                set { _id = value; }
+            }
+
+            private string _parent;
+
+            public string parent
+            {
+                get { return _parent; }
+                set { _parent = value; }
+            }
+
+            private string _text;
+
+            public string text
+            {
+                get { return _text; }
+                set { _text = value; }
+            }
+
+        }
+
+        #endregion
+
         #region Class Methods
 
         #region Load Data Method - Future Integration
@@ -134,7 +184,7 @@ namespace ConfigRequestQuestionApp.Models
 
         #endregion
 
-        #region Build Structure Methods
+        #region Build Structure Methods [Object List Format & JSON String Format]
 
         public void BuildQuestionStructure()
         {
@@ -177,6 +227,7 @@ namespace ConfigRequestQuestionApp.Models
                 xQ.PercentComplete = curPercent;
 
                 //Add root/parent to temp structure
+                xQ.NodeLevel = buildLevel;
                 questionStructure.Add(xQ);
 
                 //Remove single parent that was added to structure from question list
@@ -227,10 +278,13 @@ namespace ConfigRequestQuestionApp.Models
                         xQ.PercentComplete = curPercent;
 
                         //add it to temp
+                        xQ.NodeLevel = buildLevel;
                         questionStructure.Add(xQ);
 
                         //remove from questionlist
                         this.questionList.Remove(xQ);
+
+                        ++buildLevel;
 
                         if (xQ.IsConditional)
                         {   //queue up conditional children
@@ -253,7 +307,7 @@ namespace ConfigRequestQuestionApp.Models
                         else
                         {   //direct child
                             xQ = this.questionList.Where(x => x.QuestionID == xQ.ChildQID).FirstOrDefault();
-                            ++buildLevel;
+                            //++buildLevel;
                         }
                 }
                 else
@@ -284,6 +338,7 @@ namespace ConfigRequestQuestionApp.Models
 
                 this.questionList = new List<Question>();
                 this.questionList = questionStructure.ToList();
+                this.FormatJsonTree();
 
             }
             catch (Exception)
@@ -293,6 +348,26 @@ namespace ConfigRequestQuestionApp.Models
 
 
 }
+
+        private void FormatJsonTree()
+        {
+            BuildJTree x;
+
+            foreach (Question item in this.questionList)
+            {
+                x = new BuildJTree
+                {
+                    id = item.QuestionID.ToString(),
+                    parent = item.ParentQID == 0 ? "#" : item.ParentQID.ToString(),
+                    text = item.QuestionTitle
+                };
+
+                this._jsTree.Add(x);
+            }
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+
+            this._buildTreeJson = jss.Serialize(this._jsTree);
+        }
 
         #endregion
 
