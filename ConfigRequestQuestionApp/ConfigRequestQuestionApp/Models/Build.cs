@@ -16,6 +16,7 @@ namespace ConfigRequestQuestionApp.Models
         private string currentBuildName;
         private string currentSolution;
         private int currentVersion;
+        private int selectedVersion;
         private int origBuildPersonID;
         private string origBuildPersonName;
         private DateTime bUpdt;
@@ -53,6 +54,12 @@ namespace ConfigRequestQuestionApp.Models
             set { currentVersion = value; }
         }
 
+        public int SelectedVersion
+        {
+            get { return selectedVersion; }
+            set { selectedVersion = value; }
+        }
+
         public int OrigBuildPersonID
         {
             get { return origBuildPersonID; }
@@ -87,6 +94,15 @@ namespace ConfigRequestQuestionApp.Models
         {
             get { return buildVersionList; }
             set { buildVersionList = value; }
+        }
+
+        #endregion
+
+        #region Constructor
+
+        public Build()
+        {
+            buildVersionList = new List<BuildVersion>();
         }
 
         #endregion

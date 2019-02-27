@@ -1,4 +1,5 @@
 ﻿@using ConfigRequestQuestionApp.Models;
+@*@model ConfigRequestQuestionApp.Models.Build*@
 
 @{
     ViewBag.Title = "Manage Build";
@@ -6,11 +7,84 @@
 
 <div id="manage-build-form-container" class="view-body-container row position-static">
     <div class="col-9 col-centered view-body-inner">
-        <h2>ManageBuild</h2>
-        <div id="build-js-tree">
+        <div class="row manage-build-loader justify-content-center h-100 align-items-center">
+            <div class="spinner-border text-success" style="width: 10rem; height: 10rem;" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
+        <form class="manage-build-form d-none" method="post" action="FILELOCATION FOR THE POST">
+            <div class="d-flex flex-row row manage-build-header align-items-center">
+                <div class="col-sm-12 col-lg-10 manage-build-title">
+                    <h2>[No Name]</h2>
+                </div>
+                <div class="col-sm-12 col-lg-2 align-content-end">
+                    <div class="versions-drp-dwn btn-group col-12">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Version
+                        </button>
+                        <div class="dropdown-menu col-11">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="d-flex flex-row align-items-start flex-wrap manage-build-content">
+                <div class="col-sm-12 col-lg-2">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link active" id="v-pills-build-info-tab" data-toggle="pill" href="#v-pills-build-info" role="tab" aria-controls="v-pills-build-info" aria-selected="true">Build Info</a>
+                        <a class="nav-link" id="v-pills-question-tab" data-toggle="pill" href="#v-pills-questions" role="tab" aria-controls="v-pills-questions" aria-selected="false">Questions</a>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-lg-10">
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-build-info" role="tabpanel" aria-labelledby="v-pills-build-info-tab">
+                            <div class="form-group d-flex flex-row flex-wrap">
+                                <div class="col-sm-12 col-lg-6 manage-build-field">
+                                    <label for="build-name">Build Name:</label>
+                                    <input class="form-control" id="build-name" type="text" value="">
+                                </div>
+                                <div class="col-sm-12 col-lg-6 manage-build-field">
+                                    <label for="solution-meaning">Solution</label>
+                                    <input class="form-control" id="solution-meaning" type="text" value="">
+                                </div>
+                                <div class="col-sm-12 col-lg-6 manage-build-field">
+                                    <label for="version-num">Version #:</label>
+                                    <input class="form-control" id="version-num" type="text" value="">
+                                </div>
+                                <div class="col-sm-12 col-lg-6 manage-build-field">
+                                    <label for="active_ind">Active:</label>
+                                    <input class="form-control" id="active_ind" type="text" value="">
+                                </div>
+                                <div class="col-sm-12 col-lg-6 manage-build-field">
+                                    <label for="last_update_date">Last Updated:</label>
+                                    <input class="form-control" id="last_update_date" type="text" value="">
+                                </div>
+                                <div class="col-sm-12 col-lg-6 manage-build-field">
+                                    <label for="last_updated_by">Last Updated By:</label>
+                                    <input class="form-control" id="last_updated_by" type="text" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-questions" role="tabpanel" aria-labelledby="v-pills-question-tab">
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <div class="col-6">
+                                        <label for="txt-tree-search">Search Tree:</label>
+                                        <input class="form-control" id="txt-tree-search" type="text">
+                                    </div>
+                                </div>
 
+                            </div>
+                            <div class="row">
+                                <div id="build-js-tree">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
         @*<div id="json-troubleshoot">
 
         </div>*@

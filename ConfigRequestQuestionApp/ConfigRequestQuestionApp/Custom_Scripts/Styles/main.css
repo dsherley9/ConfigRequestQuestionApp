@@ -1,6 +1,11 @@
 ﻿/*Global Styles*/
+html {
+    height: 100%;
+}
+
 body{
     overflow-x: hidden;
+    height: 100%;
 }
 
 header.global-head {
@@ -35,7 +40,7 @@ span#user-name{
 }
 
 div#main-container {
-    height: 78vh;
+    height: 80vh;
     background-color: #eff2f3;
 }
 
@@ -58,8 +63,9 @@ div.view-body-container {
     overflow: auto;
 }
 
-div.view-body-inner{
+div.view-body-inner {
     background-color: white;
+    height: 100%;
 }
 
 .col-centered {
@@ -110,8 +116,13 @@ div.view-body-inner{
 
 
 /*Builds Questions*/
-div#build-form {
-    height: 67vh;
+
+form.build-form{
+    height:100%;
+}
+
+div#build-form-header {
+    height: 15%;
 }
 
 div #build-form-header h3 {
@@ -121,6 +132,10 @@ div #build-form-header h3 {
 div #build-form-header .progress.progress-bar-striped {
     height: 3.5vh;
     margin: 1.5vh 0;
+}
+
+div#build-form-content {
+    height: 85%;
 }
 
 div#build-question-list {
@@ -220,3 +235,26 @@ div.question-wrapper {
 li.d-none{
     display:block !important;
 }*/
+
+
+
+/*Mangage Builds*/
+form.manage-build-form {
+    height: 100%;
+}
+
+.manage-build-header {
+    margin: 15px !important;
+}
+
+.manage-build-title {
+    height: auto;
+}
+
+.manage-build-content {
+    height: auto;
+}
+
+.manage-build-field {
+    margin: 10px 0px;
+}

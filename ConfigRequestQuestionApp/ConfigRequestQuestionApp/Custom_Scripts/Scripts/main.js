@@ -60,35 +60,103 @@ $(document).ready(function () {
 
     if (window.location.href.indexOf("/Builds/ManageBuild") > -1) {
 
-        var data = {};
-        data.versionID = 1;
+        switch (getUrlParameter('type')) {
 
+            case "Edit":
 
-        $.ajax({
-            type: "POST",
-            url: "/Builds/GetBuildTree",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(data),
-            dataType: "json",
-            success: function (result, status, xhr) {
-                $('#build-js-tree').jstree({
-                    'core': {
-                        'data': result
+                var data = {};
+                data.bID = getUrlParameter('bID');
+                data.vID = 0; //Defaulting to 0 for now, which will load the current build version.
+                //data.vID = getUrlParameter('vID');
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Builds/GetBuildTree",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    success: function (result, status, xhr) {
+
+                        //version_id to load
+                        var _versionID = result.SelectedVersion;
+                        var vIDX = result.BuildVersionList.findIndex(x => x.VersionId === _versionID);
+
+                        //Bind Current Tree
+                        $('#build-js-tree').jstree({
+                            'core': {
+                                'data': result.BuildVersionList[vIDX].JSTree
+                                , "check_callback": true
+                            }
+                            , "plugins": ["dnd", "search"]
+                        });
+
+                        //Build Name
+                        $('.manage-build-title h2').text(result.BuildVersionList[vIDX].BuildName);
+                        $('.manage-build-field #build-name').val(result.BuildVersionList[vIDX].BuildName);
+
+                        //Solution
+                        $('.manage-build-field #solution-meaning').val(result.BuildVersionList[vIDX].SolutionMeaning);
+
+                        //Selected Version
+                        $('.manage-build-field #version-num').val(result.BuildVersionList[vIDX].VersionNum);
+
+                        //Add Versions
+                        for (var i = 0; i < result.BuildVersionList.length; i++) {
+                            $('.versions-drp-dwn button').append(' ' + result.BuildVersionList[i].VersionNum);
+
+                            //if current version (future implementation)
+                            //style='background-color:#6c757d; color:#fff;'
+                            $('.versions-drp-dwn .dropdown-menu').append("<a class='dropdown-item' value='" + result.BuildVersionList[i].VersionId + "'>" + result.BuildVersionList[i].VersionNum + "</a>");
+                        }
+
+                        //Last Updated
+                        var date = result.BuildVersionList[vIDX].VUpdt;
+                        //var nowDate = new Date(parseInt(date.substr(6)));
+                        //var tempDate = "";
+                        //tempDate += nowDate.format("ddd mmm dd yyyy HH:MM:ss") + " ";
+                        $('.manage-build-field #last_update_date').val(date);
+
+                        //Last Updated By
+                        $('.manage-build-field #last_updated_by').val(result.BuildVersionList[vIDX].VUpdtName);
+
+                        //Bind Tree Search
+                        var to = false;
+                        $('#txt-tree-search').keyup(function () {
+                            if (to) { clearTimeout(to); }
+                            to = setTimeout(function () {
+                                var v = $('#txt-tree-search').val();
+                                $('#build-js-tree').jstree(true).search(v);
+                            }, 250);
+                        });
+
+                        //Troubleshooting
+                        //$('#json-troubleshoot').append(JSON.stringify(result));
+
+                        $('.manage-build-loader').hide("slow");
+                        $('.manage-build-form').removeClass('d-none');
+                    },
+                    error: function (xhr, status, error) {
+                        $("#build-js-tree").html("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
                     }
                 });
-                //$('#json-troubleshoot').append(JSON.stringify(result));
-            },
-            error: function (xhr, status, error) {
-                $("#build-js-tree").html("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
-            }
-        });
+                
+                break;
+
+            default:
+
+                $('.manage-build-loader').hide();
+                $('.manage-build-form').removeClass('d-none');
+                break;
+        }
+
+
     }
 });
 
 
 
 //-----------------------------------------------//
-// Global Dropdown
+// Global
 //-----------------------------------------------//
 
 function toggleDropdown(e) {
@@ -101,6 +169,22 @@ function toggleDropdown(e) {
         $('[data-toggle="dropdown"]', _d).attr('aria-expanded', shouldOpen);
     }, e.type === 'mouseleave' ? 300 : 0);
 }
+
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+};
 
 
 //-----------------------------------------------//

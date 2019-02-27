@@ -83,7 +83,10 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a id="manage-builds"class="nav-link" href="/Builds/ManageBuild">Manage Builds</a>
+                    <a id="manage-builds" class="nav-link" href="@Url.Action("ManageBuild","Builds", new {type="Edit",bID="1"})">Manage Builds</a>@*"/Builds/ManageBuild/Edit?BID=1&VID=1"*@
+                </li>
+                <li class="nav-item">
+                    <a id="new-build" class="nav-link" href="@Url.Action("ManageBuild","Builds", new {type="New"})">New Build</a>@*"/Builds/ManageBuild/Edit?BID=1&VID=1"*@
                 </li>
             </ul>
         </nav>

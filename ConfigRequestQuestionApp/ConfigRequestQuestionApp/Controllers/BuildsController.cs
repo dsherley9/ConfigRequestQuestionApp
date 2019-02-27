@@ -18,7 +18,6 @@ namespace ConfigRequestQuestionApp.Controllers
         //Build Controller Objects//
         private List<Build> buildList;
         private Build buildSelected;
-        private BuildVersion versionSelected;
 
         #endregion
 
@@ -27,7 +26,7 @@ namespace ConfigRequestQuestionApp.Controllers
         // GET: Builds
         public ActionResult Index()
         {
-            Load_Builds();
+            LoadBuilds();
             return View(buildList);
         }
 
@@ -37,34 +36,41 @@ namespace ConfigRequestQuestionApp.Controllers
 
         public ActionResult Build(int ID)
         {
-            LoadBuildByID(ID);
-            versionSelected.BuildQuestionStructure();
-            return View(versionSelected);
+            LoadBuildByID(ID,0);
+            return View(buildSelected);
         }
 
         #endregion
 
         #region Manage Builds
 
-        public ActionResult ManageBuild()
+        public ActionResult ManageBuild(string type, int bID = 0, int vID = 0)
         {
-            return View();
+            if (type == "Edit")
+            {
+                return View();
+            }
+            else 
+            {
+                return View();
+            }
         }
 
 
         [HttpPost]
-        public string GetBuildTree(int versionID)
+        public string GetBuildTree(int bID, int vID)
         {
-            LoadBuildByID(versionID);
-            versionSelected.BuildQuestionStructure();
-            return versionSelected.BuildTreeJson;
+            LoadBuildByID(bID, vID);
+            JavaScriptSerializer buildJson = new JavaScriptSerializer();
+            return buildJson.Serialize(buildSelected);
+            //return buildSelected.BuildVersionList.Where(x => x.VersionId == buildSelected.SelectedVersion).FirstOrDefault().BuildTreeJson;
         }
 
         #endregion
 
         #region Load Methods
 
-        private void Load_Builds()
+        private void LoadBuilds()
         {
             Build buildItem = new Build();
             buildList = new List<Build>();
@@ -107,11 +113,9 @@ namespace ConfigRequestQuestionApp.Controllers
             }
         }
 
-        private void LoadBuildByID(int buildID)
+        private void LoadBuildByID(int buildID, int versionID)
         {
             buildSelected = new Build();
-            versionSelected = new BuildVersion();
-            //questionList = new List<Question>();
 
             try
             {
@@ -125,6 +129,8 @@ namespace ConfigRequestQuestionApp.Controllers
                 SqlCommand cmd = new SqlCommand("GetBuildInfoByID", dbCon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandTimeout = 60;
+                BuildVersion version;
+
 
                 //Add Paramaters
                 cmd.Parameters.Add("@buildID", SqlDbType.Int).Value = buildID;
@@ -142,18 +148,36 @@ namespace ConfigRequestQuestionApp.Controllers
                     buildSelected.CurrentBuildName = dr[dr.GetOrdinal("build_name")].ToString();
                     buildSelected.CurrentSolution = dr[dr.GetOrdinal("solution_name")].ToString();
                     buildSelected.CurrentVersion = int.Parse(dr[dr.GetOrdinal("build_version_id")].ToString());
-                    versionSelected.VersionId = int.Parse(dr[dr.GetOrdinal("build_version_id")].ToString());
-                    versionSelected.VersionNum = int.Parse(dr[dr.GetOrdinal("version_num")].ToString());
-                    versionSelected.FirstQID = int.Parse(dr[dr.GetOrdinal("first_q_id")].ToString());
-                    versionSelected.BuildName = dr[dr.GetOrdinal("build_name")].ToString();
-                    versionSelected.SolutionMeaning = dr[dr.GetOrdinal("solution_meaning")].ToString();
-                    versionSelected.VUpdt = dr.GetDateTime(dr.GetOrdinal("updt_dt_tm"));// DateTime.Parse(dr[dr.GetOrdinal("updt_dt_tm")].ToString());
-                    versionSelected.VUpdtID = int.Parse(dr[dr.GetOrdinal("updt_id")].ToString());
-                    versionSelected.VUpdtName = dr[dr.GetOrdinal("updt_name")].ToString();
+
+                    //Load Version Info
+
+                    version = new BuildVersion();
+
+                    version.VersionId = int.Parse(dr[dr.GetOrdinal("build_version_id")].ToString());
+                    version.VersionNum = int.Parse(dr[dr.GetOrdinal("version_num")].ToString());
+                    version.FirstQID = int.Parse(dr[dr.GetOrdinal("first_q_id")].ToString());
+                    version.BuildName = dr[dr.GetOrdinal("build_name")].ToString();
+                    version.SolutionMeaning = dr[dr.GetOrdinal("solution_meaning")].ToString();
+                    version.VUpdt = dr.GetDateTime(dr.GetOrdinal("updt_dt_tm"));// DateTime.Parse(dr[dr.GetOrdinal("updt_dt_tm")].ToString());
+                    version.VUpdtID = int.Parse(dr[dr.GetOrdinal("updt_id")].ToString());
+                    version.VUpdtName = dr[dr.GetOrdinal("updt_name")].ToString();
+
+                    buildSelected.BuildVersionList.Add(version);
                 }
 
                 dbCon.Close();
-                LoadQuestionByVersionID(buildSelected.CurrentVersion);
+
+                switch (versionID)
+                {
+                    case 0:
+                        //if not specific, just load the current
+                        LoadQuestionByVersionID(buildSelected.CurrentVersion);
+                        break;
+                    default:
+                        LoadQuestionByVersionID(versionID);
+                        break;
+                }
+                
             }
             catch (Exception)
             {
@@ -165,6 +189,7 @@ namespace ConfigRequestQuestionApp.Controllers
         private void LoadQuestionByVersionID(int versionID)
         {
             Question qItem;
+            buildSelected.SelectedVersion = versionID;
 
             try
             {
@@ -188,7 +213,10 @@ namespace ConfigRequestQuestionApp.Controllers
                 //Load into reader
                 SqlDataReader dr = cmd.ExecuteReader();
 
+                //Other Variables
                 int questionID = 0;
+                //Build Version Object
+                BuildVersion loadVersion = buildSelected.BuildVersionList.Where(x => x.VersionId == versionID).FirstOrDefault();
 
                 while (dr.Read())
                 {
@@ -197,7 +225,7 @@ namespace ConfigRequestQuestionApp.Controllers
                     questionID = int.Parse(dr[dr.GetOrdinal("question_id")].ToString());
 
                     //If question already exists, it must be for options
-                    if (versionSelected.QuestionList.Any(x => x.QuestionID == questionID))
+                    if (loadVersion.QuestionList.Any(x => x.QuestionID == questionID))
                     {
                             QuestionOptions qOpt = new QuestionOptions();
                             qOpt.QuestionID = questionID;
@@ -206,8 +234,8 @@ namespace ConfigRequestQuestionApp.Controllers
                             qOpt.ChildID = int.Parse(dr[dr.GetOrdinal("child_q_id")].ToString());
                             qOpt.Sequence = int.Parse(dr[dr.GetOrdinal("seq")].ToString());
 
-                            versionSelected.QuestionList.Where(x => x.QuestionID == questionID).FirstOrDefault().QOptions.Add(qOpt);
-                            versionSelected.QuestionList.Where(x => x.QuestionID == questionID).FirstOrDefault().ReSequenceOptions();
+                            loadVersion.QuestionList.Where(x => x.QuestionID == questionID).FirstOrDefault().QOptions.Add(qOpt);
+                            loadVersion.QuestionList.Where(x => x.QuestionID == questionID).FirstOrDefault().ReSequenceOptions();
                     }
                     else
                     {//New question
@@ -257,13 +285,13 @@ namespace ConfigRequestQuestionApp.Controllers
                         qItem.QUpdtID = int.Parse(dr[dr.GetOrdinal("updt_id")].ToString());
                         qItem.QUpdtName = dr[dr.GetOrdinal("updt_name")].ToString();
 
-                        versionSelected.QuestionList.Add(qItem);
+                        loadVersion.QuestionList.Add(qItem);
 
                     }
                 }
 
                 dbCon.Close();
-
+                loadVersion.BuildQuestionStructure();
             }
             catch (Exception)
             {

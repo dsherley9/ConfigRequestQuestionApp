@@ -1,4 +1,5 @@
 ﻿@using ConfigRequestQuestionApp.Models;
+@model ConfigRequestQuestionApp.Models.Build
 
 @*@{
         ViewBag.Title = "Build Item Selected";
@@ -7,10 +8,10 @@
 
 <div id="build-form-container" class="view-body-container row position-static">
     <div class="col-9 col-centered view-body-inner">
-        <form method="post" action="FILELOCATION FOR THE POST">
+        <form class="build-form" method="post" action="FILELOCATION FOR THE POST">
             <div id="build-form-header" class="row build-form-header">
                 <div class="col-12">
-                    <h3>Build Form: @Model.BuildName </h3>
+                    <h3>Build Form: @Model.BuildVersionList.Where(x => x.VersionId == Model.SelectedVersion).FirstOrDefault().BuildName </h3>
 
                     <div id="build-form-progress" class="progress progress-bar-striped">
                         <div id="build-form-progress-inner" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -18,10 +19,10 @@
                 </div>
             </div>
 
-            <div id="build-form" class="row build-form">
+            <div id="build-form-content" class="row build-form">
                 <div id="build-question-list" class="col-3 scrollbar">
                     <ul class="list-group">
-                        @foreach (Question item in Model.QuestionList)
+                        @foreach (Question item in @Model.BuildVersionList.Where(x => x.VersionId == Model.SelectedVersion).FirstOrDefault().QuestionList)
                         {//d-none when ready
                             <li class="list-group-item list-group-item-action parentQ-@item.ParentQID QID-@item.QuestionID PERC-@item.PercentComplete d-none"> @item.QuestionTitle</li>
                         }
@@ -33,8 +34,8 @@
                 <div id="build-question" class="col-9">
                     <div class="row form-question-content">
                         <div id="build-form-question" class="col-12">
-                            <div class="row @Model.FirstQID question-wrapper">
-                                @foreach (Question item in Model.QuestionList)
+                            <div class="row first-qid-@Model.BuildVersionList.Where(x => x.VersionId == Model.SelectedVersion).FirstOrDefault().FirstQID question-wrapper">
+                                @foreach (Question item in @Model.BuildVersionList.Where(x => x.VersionId == Model.SelectedVersion).FirstOrDefault().QuestionList)
                                 {
                                     <div class="col-12 question-inner QID-@item.QuestionID @item.QTypeMeaning d-none">
                                         <div class="row question-form-title">
@@ -46,24 +47,24 @@
                                                 {
                                                     foreach (var opt in item.QOptions)
                                                     {
-                                                            if (item.IsRequired)
-                                                            {
-                                                                <div class="form-check">
-                                                                    <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID parentQ-@item.ParentQID QID-@item.QuestionID Conditional Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="@opt.QOptID" required />
-                                                                    <label class="form-check-label" for="@item.QuestionID-@opt.QOptID">@opt.LabelText</label>
-                                                                </div>
+                                                        if (item.IsRequired)
+                                                        {
+                                                            <div class="form-check">
+                                                                <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID parentQ-@item.ParentQID QID-@item.QuestionID Conditional Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="@opt.QOptID" required />
+                                                                <label class="form-check-label" for="@item.QuestionID-@opt.QOptID">@opt.LabelText</label>
+                                                            </div>
 
-                                                            }
-                                                            else
-                                                            {
-                                                                <div class="form-check">
-                                                                    <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID parentQ-@item.ParentQID QID-@item.QuestionID Conditional Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="@opt.QOptID" />
-                                                                    <label class="form-check-label" for="@item.QuestionID-@opt.QOptID">@opt.LabelText</label>
-                                                                </div>
-                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="form-check">
+                                                                <input id="@item.QuestionID-@opt.QOptID" class="childQ-@opt.ChildID parentQ-@item.ParentQID QID-@item.QuestionID Conditional Input-Control form-check-input" type="checkbox" name="@item.QuestionID" value="@opt.QOptID" />
+                                                                <label class="form-check-label" for="@item.QuestionID-@opt.QOptID">@opt.LabelText</label>
+                                                            </div>
+                                                        }
                                                     }
                                                 }
-                                                else if (item.QTypeMeaning == "RADIOBUTTONS" || item.QTypeMeaning =="YESNO")
+                                                else if (item.QTypeMeaning == "RADIOBUTTONS" || item.QTypeMeaning == "YESNO")
                                                 {
                                                     foreach (QuestionOptions opt in item.QOptions)
                                                     {
@@ -149,8 +150,8 @@
                                 <div class="col-12" align="right">
                                     <button class="btn btn-outline-secondary submit-btn d-none" type="submit">Submit</button>
                                     <button class="btn btn-outline-secondary sav-btn" type="button">Save</button>
-                                    <button class="btn btn-primary prev-btn"  type="button">Previous Question</button>
-                                    <button class="btn btn-primary next-btn"  type="button">Next Question</button>
+                                    <button class="btn btn-primary prev-btn" type="button">Previous Question</button>
+                                    <button class="btn btn-primary next-btn" type="button">Next Question</button>
                                 </div>
                             </div>
 
