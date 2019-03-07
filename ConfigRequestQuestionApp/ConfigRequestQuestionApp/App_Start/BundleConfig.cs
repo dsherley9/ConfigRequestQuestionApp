@@ -40,6 +40,7 @@ namespace ConfigRequestQuestionApp
                       , "~/Custom_Scripts/Scripts/Dropzone/dropzone.css"
                       , "~/Custom_Scripts/Scripts/vakata-jstree-bc5187e/dist/themes/default/style.min.css"
                       , "~/Custom_Scripts/Scripts/bootstrap-select-1.13.2/dist/css/bootstrap-select.min.css"
+                      , "~/Custom_Scripts/Scripts/bootstrap4-toggle-3.4.0/css/bootstrap4-toggle.min.css"
                       ));
 
             bundles.Add(new StyleBundle("~/bundles/custscripts").Include(
@@ -50,6 +51,7 @@ namespace ConfigRequestQuestionApp
                     , "~/Custom_Scripts/Scripts/jquery.scrollTo/jquery.scrollTo.min.js"
                     , "~/Custom_Scripts/Scripts/vakata-jstree-bc5187e/dist/jstree.min.js"
                     , "~/Custom_Scripts/Scripts/bootstrap-select-1.13.2/dist/js/bootstrap-select.min.js"
+                    , "~/Custom_Scripts/Scripts/bootstrap4-toggle-3.4.0/js/bootstrap4-toggle.min.js"
                 ));
 
             bundles.Add(new StyleBundle("~/bundles/Builds/Build").Include(
