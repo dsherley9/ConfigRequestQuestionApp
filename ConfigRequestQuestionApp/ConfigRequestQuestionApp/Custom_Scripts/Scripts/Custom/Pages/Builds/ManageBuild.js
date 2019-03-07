@@ -6,21 +6,23 @@
      TREE FUNCTIONS
      -----------------*/
 
-    async function InitializeForm() {
+   function InitializeForm() {
+
+       var formLoad = new Array;
 
         if (window.location.href.indexOf("/Builds/ManageBuild") > -1) {
 
+            const loadDropDowns = GetDropDowns();
 
+            formLoad.push(loadDropDowns);
 
-            const loadDropDowns = GetDropDowns()
+            loadDropDowns
                 .then((result) => {
                     var $codevalues = result;
-
                     for (var i = 0; i < $codevalues.length; i++) {
                         $('.question-type-drp-dwn .selectpicker').append("<option data-tokens='' value='" + $codevalues[i].codeValue + "' >" + $codevalues[i].description + "</option>");
                     }
-                    $('.question-type-drp-dwn .selectpicker').selectpicker('refresh');
-                        console.log(result);                    
+                    $('.question-type-drp-dwn .selectpicker').selectpicker('refresh');                 
                 })
                 .catch((error) => {
                     $('.question-type-drp-dwn .selectpicker').append("<option data-tokens='' value='1'>Error Loading...</option>");
@@ -38,7 +40,11 @@
                     buildData.bID = getUrlParameter('bID');
                     buildData.vID = 0; //Defaulting to 0 for now, which will load the current build version.
 
-                    const loadBuild = LoadExistingBuild(buildData)
+                    const loadBuild = LoadExistingBuild(buildData);
+
+                    formLoad.push(loadBuild);
+
+                    loadBuild
                         .then((result) => {
 
                             //version_id to load
@@ -131,15 +137,7 @@
                         .catch((error) => {
                             $('.manage-build-title h2').text("Error loading build..");
                             $("#build-name").val("Error: " + error);
-                        });
-
-
-                    //don't think worked
-                    Promise.all([loadDropDowns, loadBuild]).then(() => {
-                        $('.manage-build-loader').hide("slow");
-                        $('.manage-build-form').removeClass('d-none');
-                    });
-                                           
+                        });                                          
 
                     break;
 
@@ -149,7 +147,17 @@
                     $('.manage-build-form').removeClass('d-none');
                     break;
             }
- 
+
+
+            //wait for load
+            Promise.all(formLoad).then(() => {
+                formLoad.forEach((e,i,arr) => console.log(arr[i]));
+                //console.log(loadDropDowns);
+               // console.log(loadBuild);
+                $('.manage-build-loader').hide("slow");
+                $('.manage-build-form').removeClass('d-none');
+            });
+
         }
 
     }
