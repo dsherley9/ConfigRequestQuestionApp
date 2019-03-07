@@ -35,26 +35,34 @@ namespace ConfigRequestQuestionApp
 
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      //"~/Content/site.css",
-                      "~/Custom_Scripts/Styles/main.css"
-                      //,"~/Custom_Scripts/Scripts/DataTables/jquery.dataTables.min.css"
+                      "~/Custom_Scripts/Styles/Custom/Core/main.css"
                       , "~/Custom_Scripts/Scripts/DataTables/dataTables.bootstrap4.min.css"
-                      //,"~/Custom_Scripts/Scripts/DataTables/datatables.css"
-                      //,"~/Custom_Scripts/Scripts/DataTables/dataTables.material.min.css"
-                      //, "~/Custom_Scripts/Scripts/DataTables/material.min.css"
                       , "~/Custom_Scripts/Scripts/Dropzone/dropzone.css"
                       , "~/Custom_Scripts/Scripts/vakata-jstree-bc5187e/dist/themes/default/style.min.css"
+                      , "~/Custom_Scripts/Scripts/bootstrap-select-1.13.2/dist/css/bootstrap-select.min.css"
                       ));
 
             bundles.Add(new StyleBundle("~/bundles/custscripts").Include(
-                    "~/Custom_Scripts/Scripts/main.js"
+                    "~/Custom_Scripts/Scripts/Custom/Core/main.js"
                     , "~/Custom_Scripts/Scripts/DataTables/jquery.dataTables.min.js"
                     , "~/Custom_Scripts/Scripts/DataTables/dataTables.bootstrap4.min.js"
-                    //, "~/Custom_Scripts/Scripts/DataTables/datatables.js"
-                    //, "~/Custom_Scripts/Scripts/DataTables/dataTables.material.min.js"
                     , "~/Custom_Scripts/Scripts/Dropzone/dropzone.js"
                     , "~/Custom_Scripts/Scripts/jquery.scrollTo/jquery.scrollTo.min.js"
                     , "~/Custom_Scripts/Scripts/vakata-jstree-bc5187e/dist/jstree.min.js"
+                    , "~/Custom_Scripts/Scripts/bootstrap-select-1.13.2/dist/js/bootstrap-select.min.js"
+                ));
+
+            bundles.Add(new StyleBundle("~/bundles/Builds/Build").Include(
+                    "~/Custom_Scripts/Scripts/Custom/Pages/Builds/Build.js"
+                ));
+
+
+            bundles.Add(new StyleBundle("~/bundles/Builds/Index").Include(
+                    "~/Custom_Scripts/Scripts/Custom/Pages/Builds/Index.js"
+            ));
+
+            bundles.Add(new StyleBundle("~/bundles/Builds/ManageBuild").Include(
+                    "~/Custom_Scripts/Scripts/Custom/Pages/Builds/ManageBuild.js"
                 ));
 
 

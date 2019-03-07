@@ -1,101 +1,62 @@
 ﻿@using ConfigRequestQuestionApp.Models;
 @model List<Build>
 
-
 @{
     ViewBag.Title = "Builds";
 }
-
 <div id="build-view-container" class="view-body-container row position-static">
-        <div class="col-8 col-centered view-body-inner">
-            <div class="row build-view-head">
-                <h2>Builds</h2>
-            </div>
-            <div class="row build-view-options">
-                <div class="col-12">
-                    @*<div class="row">
-                    <div class="col-4">
-                        <span>Build Name</span>
-                        <select id="build-name-select"></select>
-                    </div>
-                    <div class="col-4">
-                        <span>Solution</span>
-                        <select></select>
-                    </div>
-                    <div class="col-4">
-                        <span>Version</span>
-                        <select></select>
-                    </div>
-                </div>*@
-                    <div class="row">
-                        <div class="col-12">
-                            <table id="myTable" class="table table-striped table-bordered table-hover" style="width:100%">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>
-                                            <div class="row myTable-column-header">Build ID</div>
-                                            <div class="row myTable-column-filter"></div>
-                                        </th>
-                                        <th>
-                                            <div class="row myTable-column-header">Build Name</div>
-                                            <div class="row myTable-column-filter"></div>
-                                        </th>
-                                        <th>
-                                            <div class="row myTable-column-header">Solution</div>
-                                            <div class="row myTable-column-filter"></div>
-                                        </th>
-                                        <th>
-                                            <div class="row myTable-column-header">Current Version</div>
-                                            <div class="row myTable-column-filter"></div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (Build item in Model)
-                            {
-                                <tr data-request-url="@Url.Action("build", "Builds",new { id = @item.BuildID })">
-                                    <td>@item.BuildID</td>
-                                    <td>@item.CurrentBuildName</td>
-                                    <td>@item.CurrentSolution</td>
-                                    <td>@item.CurrentVersion</td>
-                                </tr>
-                    }
-                                    @*For testing a large amount of builds with datatables*@
-                                    @*@for (int i = 0; i <1000; i++)
-                                {
-                                    <tr>
-                                        <td>@i</td>
-                                        <td>Build Name - @i</td>
-                                        <td>Discern Rules</td>
-                                        <td>Version - @i</td>
-                                    </tr>
-
-                                }*@
-                                </tbody>
-                                @*<tfoot>
+    <div class="col-8 col-centered view-body-inner">
+        <div class="row build-view-head">
+            <h2>Builds</h2>
+        </div>
+        <div class="row build-view-options">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-12">
+                        <table id="myTable" class="table table-striped table-bordered table-hover" style="width:100%">
+                            <thead class="thead-light">
                                 <tr>
-                                    <th>Build ID</th>
-                                    <th>Build Name</th>
-                                    <th>Solution</th>
-                                    <th>Current Version</th>
+                                    <th>
+                                        <div class="row myTable-column-header">Build ID</div>
+                                        <div class="row myTable-column-filter"></div>
+                                    </th>
+                                    <th>
+                                        <div class="row myTable-column-header">Build Name</div>
+                                        <div class="row myTable-column-filter"></div>
+                                    </th>
+                                    <th>
+                                        <div class="row myTable-column-header">Solution</div>
+                                        <div class="row myTable-column-filter"></div>
+                                    </th>
+                                    <th>
+                                        <div class="row myTable-column-header">Current Version</div>
+                                        <div class="row myTable-column-filter"></div>
+                                    </th>
                                 </tr>
-                            </tfoot>*@
-                            </table>
-                        </div>
+                            </thead>
+                            <tbody>
+                                @foreach (Build item in Model)
+                                {
+                                    <tr data-request-url="@Url.Action("build", "Builds",new { id = @item.BuildID })">
+                                        <td>@item.BuildID</td>
+                                        <td>@item.CurrentBuildName</td>
+                                        <td>@item.CurrentSolution</td>
+                                        <td>@item.CurrentVersion</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </div>
 
+@section Scripts
+{
+    @Scripts.Render("~/bundles/Builds/Index")
+}
 
-
-
-@*<div id="HeaderDiv">
-        <h1>Builds</h1>
-    </div>
-    <div id="BodyDiv">
-
-    </div>*@
 
 
