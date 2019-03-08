@@ -109,25 +109,39 @@
 
 
 
-                                $('.question-slide-out').removeClass('d-none').addClass('show-slide');
-                                $('.question-tab-inner').attr('data-original-title', qTitle);
-                                $('.question-tab-inner').text(qTitle.substring(0, 10) + "...");
+                                $('#question-slide-out').removeClass('d-none').addClass('show-slide');
+                                $('#question-text-editor').removeClass('d-none').addClass('show-slide');
+                                $('#question-slide-out .question-tab-inner').attr('data-original-title', qTitle);
+                                $('#question-slide-out .question-tab-inner').text(qTitle.substring(0, 10) + "...");
                             });
 
                             $(document.body).on("click", (e) => {
 
-                                let container = $("#question-slide-out");
+                                let container = $(".question-slide-out");
 
                                 if (!container.is(e.target) && container.has(e.target).length === 0) {
                                     if ($('#question-slide-out').hasClass('q-show')) {
                                         $('#question-slide-out').removeClass('q-show');
+                                        $('#question-text-editor').removeClass('q-show');
                                     }
                                 }
                             });
 
+                            $('#question-text-go-back').on('click', () => {
+                                $('#question-text-editor').removeClass('q-show');
+                            });
 
-                            $('.question-tab').on("click", () => {
-                                $('.question-slide-out').toggleClass("q-show");
+                            $('#what-this-btn').on("click", () => {
+                                $('#question-text-editor').toggleClass("q-show");
+                            });
+
+                            $('#question-slide-out .question-tab').on("click", () => {
+
+                                if ($('#question-slide-out').hasClass('q-show')) {
+                                    $('#question-text-editor').removeClass('q-show');
+                                }
+
+                                $('#question-slide-out').toggleClass("q-show");
                             });
 
                             //Troubleshooting
