@@ -1,10 +1,8 @@
 ﻿@using ConfigRequestQuestionApp.Models;
 @*@model ConfigRequestQuestionApp.Models.Build*@
-
 @{
     ViewBag.Title = "Manage Build";
 }
-
 <div id="manage-build-form-container" class="view-body-container row position-static">
     <div class="col-12 col-centered view-body-inner">
         <div class="row manage-build-loader justify-content-center h-100 align-items-center">
@@ -20,8 +18,7 @@
                     </div>
                     <div class="col-sm-12 col-lg-2 align-content-end">
                         <div class="versions-drp-dwn col-12">
-                            <select class="selectpicker show-tick" title="Choose a version..." data-selected-text-format="Version " data-style="btn-outline-secondary" data-width="100%" data-live-search="true">
-                            </select>
+                            <select class="selectpicker show-tick" title="Choose a version..." data-selected-text-format="Version " data-style="btn-outline-secondary" data-width="100%" data-live-search="true"></select>
                         </div>
                     </div>
                 </div>
@@ -71,7 +68,6 @@
                                                 <input class="form-control" id="txt-tree-search" type="text">
                                             </div>
                                         </div>
-
                                     </div>
                                     <div class="row">
                                         <div id="build-js-tree">
@@ -100,9 +96,7 @@
                                                 <div class="manage-build-field col-lg-12">
                                                     <button id="what-this-btn" type="button" class="btn btn-warning">What's This?</button>
                                                 </div>
-
                                             </div>
-
                                             @*<div class="row">
                                                     <h2>Question Title</h2>
                                                 </div>
@@ -123,14 +117,21 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="question-text-editor" class="question-slide-out d-none" >
+                                <div id="question-text-editor" class="question-slide-out d-none">
                                     <div class="question-slide-out-inner">
-                                        <button id="question-text-go-back" type="button" class="btn btn-secondary">Go Back</button>
-                                        <div id="q-editor">
-                                        </div>
+
+                                            <div id="q-editor-head" class="">
+                                                <button id="question-text-go-back" type="button" class="btn btn-secondary">Go Back</button>
+                                                <h1>What's this?</h1>
+                                            </div>
+                                            <div id="q-editor-container">
+                                                <div id="q-editor-inner">
+                                                    <div id="q-editor">
+                                                    </div>
+                                                </div>
+                                            </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -140,10 +141,8 @@
         @*<div id="json-troubleshoot">
 
             </div>*@
-
     </div>
 </div>
-
 @section Scripts
 {
     @Scripts.Render("~/bundles/Builds/ManageBuild")
