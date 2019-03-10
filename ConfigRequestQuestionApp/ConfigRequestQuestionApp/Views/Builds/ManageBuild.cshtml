@@ -96,6 +96,32 @@
                                                 <div class="manage-build-field col-lg-12">
                                                     <button id="what-this-btn" type="button" class="btn btn-warning">What's This?</button>
                                                 </div>
+                                                <div class="manage-build-field col-lg-12">
+                                                    <button id="alerts-btn" type="button" class="btn btn-warning">Alerts</button>
+                                                </div>
+                                                <div class="manage-build-field col-lg-12">
+                                                    <h3>Options</h3>
+                                                    <ul class="q-option-list">
+                                                        <li class="q-option-list-item">
+                                                            <div class="q-option-manage">
+                                                                <i class="q-option-manage-icon q-option-delete far fa-2 fa-minus-square"></i>
+                                                            </div>
+                                                            <input class="form-control q-option-text-input" type="text" value="">
+                                                            <select class="show-tick q-option-child-input selectpicker" title="Choose a child question..." data-style="btn-outline-primary" data-width="100%" data-live-search="true">
+                                                            </select>
+                                                        </li>
+                                                        <li id="new-option-placeholder" class="q-option-list-item">
+                                                            <div class="q-option-manage">
+                                                                <i class="q-option-manage-icon q-option-add far fa-2 fa-plus-square"></i>
+                                                            </div>
+                                                            <div id="new-option-wrapper">
+                                                                <span class="noselect">Add another option...</span>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+
                                             </div>
                                             @*<div class="row">
                                                     <h2>Question Title</h2>
@@ -120,16 +146,16 @@
                                 <div id="question-text-editor" class="question-slide-out d-none">
                                     <div class="question-slide-out-inner">
 
-                                            <div id="q-editor-head" class="">
-                                                <button id="question-text-go-back" type="button" class="btn btn-secondary">Go Back</button>
-                                                <h1>What's this?</h1>
-                                            </div>
-                                            <div id="q-editor-container">
-                                                <div id="q-editor-inner">
-                                                    <div id="q-editor">
-                                                    </div>
+                                        <div id="q-editor-head" class="">
+                                            <button id="question-text-go-back" type="button" class="btn btn-secondary">Go Back</button>
+                                            <h1>What's this?</h1>
+                                        </div>
+                                        <div id="q-editor-container">
+                                            <div id="q-editor-inner">
+                                                <div id="q-editor">
                                                 </div>
                                             </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
