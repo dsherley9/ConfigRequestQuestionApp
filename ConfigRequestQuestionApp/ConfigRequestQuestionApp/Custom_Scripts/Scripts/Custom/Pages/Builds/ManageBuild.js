@@ -92,7 +92,8 @@ function InitializeForm() {
             $verionNumTxt.val(buildData.BuildVersionList[currentVersionIDX].VersionNum);
 
             //Last Updated
-            $lastUpdatedTxt.val(buildData.BuildVersionList[currentVersionIDX].VUpdt);
+            let dateCnvt = new Date(parseInt(buildData.BuildVersionList[currentVersionIDX].VUpdt.substr(6)));
+            $lastUpdatedTxt.val(dateCnvt.toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' }));
 
             //Last Updated By
             $lastUpdatedByTxt.val(buildData.BuildVersionList[currentVersionIDX].VUpdtName);
