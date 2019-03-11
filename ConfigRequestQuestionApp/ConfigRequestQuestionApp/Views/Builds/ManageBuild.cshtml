@@ -39,7 +39,8 @@
                                     </div>
                                     <div class="col-sm-12 col-lg-6 manage-build-field">
                                         <label for="solution-meaning">Solution</label>
-                                        <input class="form-control" id="solution-meaning" type="text" value="">
+                                        <select id="solution-meaning" class="selectpicker show-tick" title="Choose a solution..." data-style="btn-outline-primary" data-width="100%" data-live-search="true">
+                                        </select>
                                     </div>
                                     <div class="col-sm-12 col-lg-6 manage-build-field">
                                         <label for="version-num">Version #:</label>
@@ -90,16 +91,18 @@
                                                 <div class="question-type-drp-dwn manage-build-field col-sm-6 col-lg-12">
                                                     <select class="selectpicker show-tick" title="Choose a question type..." data-style="btn-outline-primary" data-width="100%" data-live-search="true"></select>
                                                 </div>
-                                                <div class="manage-build-field col-sm-12 col-lg-3">
-                                                    <input type="checkbox" checked data-toggle="toggle" data-on="Not Required" data-height="100%" data-width="100%" data-off="Required" data-onstyle="success" data-offstyle="danger">
+                                                <div class="manage-build-field col-sm-12 col-lg-12">
+                                                    <div id="q-required-wrapper">
+                                                        <input id="required-toggle" type="checkbox" checked data-toggle="toggle" data-on="Not Required" data-height="100%" data-width="100%" data-off="Required" data-onstyle="success" data-offstyle="danger">
+                                                    </div>
+                                                    <div id="q-whats-this-btn-wrapper">
+                                                        <button id="what-this-btn" type="button" class="btn btn-warning w-100">What's This?</button>
+                                                    </div>
+                                                    <div id="q-alerts-btn-wrapper">
+                                                        <button id="alerts-btn" type="button" class="btn btn-warning w-100">Alerts</button>
+                                                    </div>
                                                 </div>
-                                                <div class="manage-build-field col-lg-12">
-                                                    <button id="what-this-btn" type="button" class="btn btn-warning">What's This?</button>
-                                                </div>
-                                                <div class="manage-build-field col-lg-12">
-                                                    <button id="alerts-btn" type="button" class="btn btn-warning">Alerts</button>
-                                                </div>
-                                                <div class="manage-build-field col-lg-12">
+                                                <div id="q-options-container" class="manage-build-field col-lg-12" style="display: none;">
                                                     <h3>Options</h3>
                                                     <ul class="q-option-list">
                                                         <li class="q-option-list-item">
@@ -119,6 +122,9 @@
                                                             </div>
                                                         </li>
                                                     </ul>
+                                                </div>
+                                                <div class="manage-build-field col-sm-12 col-lg-12">
+                                                    <button id="save-question-btn" type="button" class="btn btn-primary w-100">Save Question</button>
                                                 </div>
 
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Script.Serialization;
 
 namespace ConfigRequestQuestionApp.Models
 {
@@ -16,7 +15,8 @@ namespace ConfigRequestQuestionApp.Models
         private int versionNum;
         private int firstQID;
         private string buildName;
-        private string solutionMeaning;
+        private int solutionCD;
+        private string solution;
         private DateTime vUpdt;
         private int vUpdtID;
         private string vUpdtName;
@@ -24,7 +24,6 @@ namespace ConfigRequestQuestionApp.Models
 
         //For JSON Tree
         private List<BuildJTree> _jsTree;
-        private string _buildTreeJson;
 
         #endregion
 
@@ -56,10 +55,17 @@ namespace ConfigRequestQuestionApp.Models
             set { buildName = value; }
         }
 
-        public string SolutionMeaning
+
+        public int SolutionCD
         {
-            get { return solutionMeaning; }
-            set { solutionMeaning = value; }
+            get { return solutionCD; }
+            set { solutionCD = value; }
+        }
+
+        public string Solution
+        {
+            get { return solution; }
+            set { solution = value; }
         }
 
         public DateTime VUpdt
@@ -93,12 +99,6 @@ namespace ConfigRequestQuestionApp.Models
         {
             get { return _jsTree; }
             set { _jsTree = value; }
-        }
-
-        public string BuildTreeJson
-        {
-            get { return _buildTreeJson; }
-            set { _buildTreeJson = value; }
         }
 
         #endregion
@@ -364,9 +364,6 @@ namespace ConfigRequestQuestionApp.Models
 
                 this._jsTree.Add(x);
             }
-            JavaScriptSerializer jss = new JavaScriptSerializer();
-
-            this._buildTreeJson = jss.Serialize(this._jsTree);
         }
 
         #endregion

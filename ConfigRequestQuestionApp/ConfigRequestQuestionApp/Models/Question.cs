@@ -22,6 +22,8 @@ namespace ConfigRequestQuestionApp.Models
         private int buildInlayID;
         private int parentQID;
         private int childQID;
+        private int qTypeCD;
+        private string qType;
         private string qTypeMeaning;
         private bool isRequired;
         private bool hasOptNA;
@@ -35,7 +37,6 @@ namespace ConfigRequestQuestionApp.Models
         private string qUpdtName;
         private double percentComplete;
         private int nodeLevel;
-
 
         #endregion
 
@@ -101,6 +102,18 @@ namespace ConfigRequestQuestionApp.Models
         {
             get { return childQID; }
             set { childQID = value; }
+        }
+
+        public int QTypeCD
+        {
+            get { return qTypeCD; }
+            set { qTypeCD = value; }
+        }
+
+        public string QType
+        {
+            get { return qType; }
+            set { qType = value; }
         }
 
         public string QTypeMeaning

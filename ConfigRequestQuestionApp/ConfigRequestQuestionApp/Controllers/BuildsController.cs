@@ -36,6 +36,7 @@ namespace ConfigRequestQuestionApp.Controllers
 
         public ActionResult Build(int ID)
         {
+            buildSelected = new Build();
             LoadBuildByID(ID,0);
             return View(buildSelected);
         }
@@ -114,10 +115,11 @@ namespace ConfigRequestQuestionApp.Controllers
                 while (dr.Read())
                 {
                     buildItem = new Build();
-                    buildItem.BuildID = int.Parse(dr[0].ToString());
-                    buildItem.CurrentBuildName = dr[1].ToString();
-                    buildItem.CurrentSolution = dr[2].ToString();
-                    buildItem.CurrentVersion = int.Parse(dr[3].ToString());
+                    buildItem.BuildID = int.Parse(dr[dr.GetOrdinal("build_id")].ToString());
+                    buildItem.CurrentBuildName = dr[dr.GetOrdinal("build_name")].ToString();
+                    buildItem.CurrentSolution = dr[dr.GetOrdinal("solution_name")].ToString();
+                    buildItem.CurrentSolutionCD = int.Parse(dr[dr.GetOrdinal("solution_cd")].ToString());
+                    buildItem.CurrentVersion = int.Parse(dr[dr.GetOrdinal("current_version")].ToString());
                     buildList.Add(buildItem);
                 }
 
@@ -162,7 +164,8 @@ namespace ConfigRequestQuestionApp.Controllers
                 {
                     buildSelected.BuildID = int.Parse(dr[dr.GetOrdinal("build_id")].ToString());
                     buildSelected.CurrentBuildName = dr[dr.GetOrdinal("build_name")].ToString();
-                    buildSelected.CurrentSolution = dr[dr.GetOrdinal("solution_name")].ToString();
+                    buildSelected.CurrentSolution = "See Version Info";
+                    buildSelected.CurrentSolutionCD = 0; //See Version Info
                     buildSelected.CurrentVersion = int.Parse(dr[dr.GetOrdinal("build_version_id")].ToString());
 
                     //Load Version Info
@@ -173,7 +176,8 @@ namespace ConfigRequestQuestionApp.Controllers
                     version.VersionNum = int.Parse(dr[dr.GetOrdinal("version_num")].ToString());
                     version.FirstQID = int.Parse(dr[dr.GetOrdinal("first_q_id")].ToString());
                     version.BuildName = dr[dr.GetOrdinal("build_name")].ToString();
-                    version.SolutionMeaning = dr[dr.GetOrdinal("solution_meaning")].ToString();
+                    version.SolutionCD = int.Parse(dr[dr.GetOrdinal("solution_cd")].ToString());
+                    version.Solution = dr[dr.GetOrdinal("solution_name")].ToString();
                     version.VUpdt = dr.GetDateTime(dr.GetOrdinal("updt_dt_tm"));// DateTime.Parse(dr[dr.GetOrdinal("updt_dt_tm")].ToString());
                     version.VUpdtID = int.Parse(dr[dr.GetOrdinal("updt_id")].ToString());
                     version.VUpdtName = dr[dr.GetOrdinal("updt_name")].ToString();
@@ -285,7 +289,10 @@ namespace ConfigRequestQuestionApp.Controllers
 
                         qItem.IsBuildInlay = dr.GetBoolean(dr.GetOrdinal("_build_inlay_ind"));
                         qItem.BuildInlayID = int.Parse(dr[dr.GetOrdinal("inlay_q_build_version_id")].ToString());
+                        qItem.QTypeCD = int.Parse(dr[dr.GetOrdinal("q_type_cd")].ToString());
+                        qItem.QType = dr[dr.GetOrdinal("q_type")].ToString();
                         qItem.QTypeMeaning = dr[dr.GetOrdinal("meaning")].ToString();
+                        
 
 
                         //Question Settings

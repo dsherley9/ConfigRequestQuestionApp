@@ -458,3 +458,20 @@ div.q-option-child-input {
     border-color: grey;
     opacity: 0.5;
 }
+
+#q-required-wrapper {
+    display: inline-block;
+    width: calc(33.3% - 10px);
+    margin-right: 10px;
+}
+
+#q-whats-this-btn-wrapper {
+    display: inline-block;
+    width: calc(33.3% - 10px);
+    margin-right: 10px;
+}
+
+div#q-alerts-btn-wrapper {
+    display: inline-block;
+    width: calc(33.3% - 10px);
+}

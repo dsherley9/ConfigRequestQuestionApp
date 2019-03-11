@@ -5,6 +5,7 @@
 var $buildTitleTxt = $('.manage-build-title h2');
 var $buildNameTxt = $('.manage-build-field #build-name');
 var $versionDrpDwn = $('.versions-drp-dwn .selectpicker');
+var $solutionDrpDwn = $('#solution-meaning.selectpicker');
 var $lastUpdatedTxt = $('.manage-build-field #last_update_date');
 var $lastUpdatedByTxt = $('.manage-build-field #last_updated_by');
 var $verionNumTxt = $('.manage-build-field #version-num');
@@ -20,6 +21,10 @@ var $questionChildrenDrpDwn = $('.q-option-child-input.selectpicker');
 var $questionOptionsList = $('ul.q-option-list');
 var $addQuestionOptionBtn = $('i.q-option-add');
 var $deleteQuestionOptionBtn = $('i.q-option-delete');
+var $optionsContainer = $('#q-options-container')
+
+var $questionTitleTxt = $('input#question-title');
+var $requiredToggle = $('#required-toggle');
 
 /*-------------------------------------------------------------
  * Form Objects
@@ -46,10 +51,24 @@ function InitializeForm() {
 
     loadDropDowns
         .then((result) => {
-            var $codevalues = result;
-            for (var i = 0; i < $codevalues.length; i++) {
-                $questionTypeDrpDwn.append("<option data-tokens='' value='" + $codevalues[i].codeValue + "' >" + $codevalues[i].description + "</option>");
+            let codeValues = result;
+            for (var i = 0; i < codeValues.length; i++) {
+                switch (codeValues[i].codeSet) {
+
+                    case 100:
+                        $questionTypeDrpDwn.append("<option data-tokens='' value='" + codeValues[i].codeValue + "' >" + codeValues[i].description + "</option>");
+                        break;
+
+                    case 200:
+                        $solutionDrpDwn.append("<option data-tokens='' value='" + codeValues[i].codeValue + "' >" + codeValues[i].description + "</option>");
+                        break;
+
+                    default:
+                        break;
+                }
+                
             }
+            $solutionDrpDwn.selectpicker('refresh');
             $questionTypeDrpDwn.selectpicker('refresh');
         })
         .catch((error) => {
@@ -79,14 +98,15 @@ function InitializeForm() {
             currentVersionIDX = buildData.BuildVersionList.findIndex(x => x.VersionId === parseInt(buildData.SelectedVersion));
 
             //Bind Question Tree
-            QuestionTreeBind();
+            QuestionFormBind();
+            QuestionTreeBind();            
 
             //Build Name
             $buildTitleTxt.text(buildData.CurrentBuildName);
             $buildNameTxt.val(buildData.BuildVersionList[currentVersionIDX].BuildName);
 
-            //Solution
-            $('.manage-build-field #solution-meaning').val(buildData.BuildVersionList[currentVersionIDX].SolutionMeaning);
+            //Solution [MAY NEED TO IMPLEMENT ASYNC/AWAIT ON THIS FUNCTION, so drop down is poplulated before setting value. Working for now.]
+            $solutionDrpDwn.selectpicker('val', buildData.BuildVersionList[currentVersionIDX].SolutionCD);
 
             //Selected Version
             $verionNumTxt.val(buildData.BuildVersionList[currentVersionIDX].VersionNum);
@@ -120,6 +140,16 @@ function InitializeForm() {
     });
 
 }
+
+function QuestionFormBind() {
+
+    $questionTypeDrpDwn.on('changed.bs.select', (e) => {
+        //console.log($(e.currentTarget).val());
+        $(e.currentTarget).val() == 2 || $(e.currentTarget).val() == 3 || $(e.currentTarget).val() == 4 ? $optionsContainer.show() : $optionsContainer.hide();
+    });
+    
+}
+
 
 function QuestionTreeBind() {
 
@@ -175,6 +205,13 @@ function QuestionTreeBind() {
         $('#question-slide-out .question-tab-inner').attr('data-original-title', qTitle);
         $('#question-slide-out .question-tab-inner').text(qTitle.substring(0, 10) + "...");
 
+
+        //Set Question Info
+        $questionTitleTxt.val(buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QuestionTitle);
+        $questionTypeDrpDwn.selectpicker('val', buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QTypeCD);
+
+        buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].IsRequired ? $requiredToggle.bootstrapToggle('off') : $requiredToggle.bootstrapToggle('on');
+
         $questionSlideOut.removeClass('d-none').addClass('show-slide');
         $('#question-text-editor').removeClass('d-none').addClass('show-slide');
     });
@@ -226,10 +263,14 @@ function BuildFormBind() {
     });
 
     //Bind New Options for Questions
-    var newOptionHTML = ('<li class="q-option - list - item"><div class="q-option-manage"><i class="q-option-manage-icon q-option-delete far fa-2 fa-minus-square"></i></div ><input class="form-control q-option-text-input" type="text" value=""><select class="selectpicker show-tick q-option-child-input" title="Choose a child question..." data-style="btn-outline-primary" data-width="100%" data-live-search="true"></select></li>');
+    var newOptionHTML = ('<li class="q-option-list-item"><div class="q-option-manage"><i class="q-option-manage-icon q-option-delete far fa-2 fa-minus-square"></i></div ><input class="form-control q-option-text-input" type="text" value="">');
+    //newOptionHTML = newOptionHTML + '<select class="show-tick q-option-child-input selectpicker" title="Choose a child question..." data-style="btn-outline-primary" data-width="100%" data-live-search="true">';
+    //newOptionHTML = newOptionHTML + $questionChildrenDrpDwn.eq(0).clone().html() + '</select>';
 
     $addQuestionOptionBtn.on("click", () => {
-        $("#new-option-placeholder").before(newOptionHTML);
+        $("#new-option-placeholder").before(newOptionHTML + $('div.q-option-child-input')[0].outerHTML);
+        console.log($('div.q-option-child-input').eq(0).find('select').outerHTML);//.eq(0).clone().html());
+        //console.log($questionChildrenDrpDwn.eq(0).clone().html());
     });
 }
 
@@ -257,7 +298,7 @@ async function GetDropDowns() {
 
     var codesets = {};
     //separate code values by "|"
-    codesets.codesetQuery = "100";
+    codesets.codesetQuery = "100|200";
 
     try {
 
