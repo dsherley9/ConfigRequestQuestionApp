@@ -58,10 +58,27 @@ namespace ConfigRequestQuestionApp.Controllers
 
 
         [HttpPost]
-        public string GetBuildTree(int bID, int vID)
+        public string BuildDataInitialize(string type, int bID = 0, int vID = 0)
         {
-            LoadBuildByID(bID, vID);
+            buildSelected = new Build();
             JavaScriptSerializer buildJson = new JavaScriptSerializer();
+
+
+            switch (type)
+            {
+                case "Edit":
+                    LoadBuildByID(bID, vID);
+                    break;
+                default: //New
+                    buildSelected.BuildVersionList.Add(new BuildVersion());
+                    buildSelected.CurrentBuildName = "New Build..";
+                    buildSelected.BuildVersionList[0].VersionNum = 1;
+                    buildSelected.BuildVersionList[0].VUpdt = DateTime.Now;
+                    buildSelected.BuildVersionList[0].QuestionList.Add(new Question());
+                    buildSelected.BuildVersionList[0].QuestionList[0].QOptions.Add(new QuestionOptions());
+                    break;
+            }            
+            
             return buildJson.Serialize(buildSelected);
             //return buildSelected.BuildVersionList.Where(x => x.VersionId == buildSelected.SelectedVersion).FirstOrDefault().BuildTreeJson;
         }
@@ -115,7 +132,6 @@ namespace ConfigRequestQuestionApp.Controllers
 
         private void LoadBuildByID(int buildID, int versionID)
         {
-            buildSelected = new Build();
 
             try
             {
