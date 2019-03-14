@@ -1,4 +1,5 @@
-﻿/*-------------------------------------------------------------
+﻿
+/*-------------------------------------------------------------
  * Form Controls
  * ----------------------------------------------------------*/
 /*BUILD Form*/
@@ -29,8 +30,8 @@ var $requiredToggle = $('#required-toggle');
 /*-------------------------------------------------------------
  * Form Objects
  * ----------------------------------------------------------*/
-var buildData;
-var currentVersionIDX;
+var buildData = {};
+var currentVersionIDX = 0;
 
 /*-------------------------------------------------------------
  * ----------------------------------------------------------*/
@@ -79,7 +80,7 @@ function InitializeForm() {
         }
         );
 
-    const loadBuildData = BuildDataInitialize(buildData = {
+    const loadBuildData = BuildDataInitialize(buildRequest = {
         type: getUrlParameter('type'), 
         bID: getUrlParameter('bID'),
         vID: 0 //Defaulting to 0 for now, which will load the current build version.
@@ -274,7 +275,7 @@ function BuildFormBind() {
     });
 }
 
-async function BuildDataInitialize(buildData) {
+async function BuildDataInitialize(buildRequest) {
     try {
 
         let result;
@@ -283,7 +284,7 @@ async function BuildDataInitialize(buildData) {
             type: "POST",
             url: "/Builds/BuildDataInitialize",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(buildData),
+            data: JSON.stringify(buildRequest),
             dataType: "json"
         });
 
@@ -318,6 +319,19 @@ async function GetDropDowns() {
         return new error(err);
     }
 
+}
+
+
+function PostBuildData() {
+    $.ajax({
+        type: "POST",
+        url: "/Builds/PostBuildData",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(buildData),
+        dataType: "json",
+        error: err => console.log(err),
+        success: resp => console.log(resp)
+    });    
 }
 
 

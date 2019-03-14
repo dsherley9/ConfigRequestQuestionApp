@@ -84,6 +84,14 @@ namespace ConfigRequestQuestionApp.Controllers
             //return buildSelected.BuildVersionList.Where(x => x.VersionId == buildSelected.SelectedVersion).FirstOrDefault().BuildTreeJson;
         }
 
+        [HttpPost]
+        public void PostBuildData(Build buildData)
+        {
+
+            Console.WriteLine(buildData);
+            return;
+        }
+
         #endregion
 
         #region Load Methods
