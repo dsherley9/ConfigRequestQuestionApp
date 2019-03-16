@@ -88,4 +88,38 @@ var getUrlParameter = function getUrlParameter(sParam) {
 };
 
 
+/*-----------------------------------------------------------------------
+ * Function that will allow you to handle double clicks and single clicks
+ * --------------------------------------------------------------------*/
+
+$.fn.singleAndDouble = function (singleClickFunc, doubleClickFunc, optElement) {
+    // This means it'll take a minimum of 200ms to take the single
+    // click action. If it's too short the single and double actions
+    // will be called.
+    // The default time between clicks on windows is 500ms (http://en.wikipedia.org/wiki/Double-click)
+    // Adjust accordingly. 
+    var timeOut = 300;
+    var timeoutID = 0;
+    var ignoreSingleClicks = false;
+    
+
+    this.on('click', optElement, (event) => {
+        if (!ignoreSingleClicks) {
+            // The double click generates two single click events
+            // and then a double click event so we always clear
+            // the last timeoutID
+            clearTimeout(timeoutID);
+            timeoutID = setTimeout(() => singleClickFunc(event), timeOut);
+        }
+    });
+
+    this.on('dblclick', optElement, (event) => {
+        clearTimeout(timeoutID);
+        ignoreSingleClicks = true;
+        setTimeout(() => ignoreSingleClicks = false, timeOut);
+        doubleClickFunc(event);
+    });
+
+};
+
 

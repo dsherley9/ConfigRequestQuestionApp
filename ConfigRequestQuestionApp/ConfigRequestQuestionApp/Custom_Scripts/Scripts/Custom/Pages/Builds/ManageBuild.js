@@ -18,11 +18,11 @@ var $searchTreeTxt = $('#txt-tree-search');
 /*Question Form*/
 var $questionSlideOut = $('#question-slide-out');
 var $questionTypeDrpDwn = $('.question-type-drp-dwn .selectpicker');
-var $questionChildrenDrpDwn = $('.q-option-child-input.selectpicker');
 var $questionOptionsList = $('ul.q-option-list');
 var $addQuestionOptionBtn = $('i.q-option-add');
 var $deleteQuestionOptionBtn = $('i.q-option-delete');
-var $optionsContainer = $('#q-options-container')
+var $optionsContainer = $('#q-options-container');
+var $questionChildrenDrpDwn = $('#q-options-list');
 
 var $questionTitleTxt = $('input#question-title');
 var $requiredToggle = $('#required-toggle');
@@ -32,6 +32,8 @@ var $requiredToggle = $('#required-toggle');
  * ----------------------------------------------------------*/
 var buildData = {};
 var currentVersionIDX = 0;
+var availableChildren;
+var singleClickCalled = false;
 
 /*-------------------------------------------------------------
  * ----------------------------------------------------------*/
@@ -154,10 +156,6 @@ function QuestionFormBind() {
 
 function QuestionTreeBind() {
 
-    /*Selected Info*/
-    var selectedQuestion;
-    var availableChildren = new Array();
-
     //Bind Current Tree
     $buildTree.jstree({
         'core': {
@@ -178,56 +176,81 @@ function QuestionTreeBind() {
     });
 
 
-    $buildTree.on("select_node.jstree", (e, data) => {
-        //alert("node_id: " + data.node.id);
-        //get node object
-        selectedQuestion = (data.node);
-        //get children so if the end user wants to make conditional, they know what questions they can select;
-        availableChildren.splice(0, availableChildren.length);//resets array, and references to array
-        selectedQuestion.children.forEach((e, i, arr) => availableChildren.push(arr[i]));
+    /*-------------------------------------------------------------------------------------------------
+     * This is very important for the JSTree. It's a handler for single and double clicks. Though it 
+     * looks redundant, it's NOT. When using "select_node.jstree", a 'dblclick' would call it 
+     * twice. This means that it was calling all the question load functions multiple times. This 
+     * handles double clicks and single clicks and makes sure there is only one call. Will significantly
+     * speed up processing.
+     * ------------------------------------------------------------------------------------------------*/
+    var singleClickCalled = false;
+    $buildTree.singleAndDouble(
+        (e) => {
+            singleClickCalled = true;
+            //console.log('Single Click Captured');
+            //console.log(e.target);
+            let node = $(e.target).closest("li");
+            LoadQuestionTab(node[0].id);
+            setTimeout(()=>singleClickCalled = false, 300);
 
-        //clear child questions drop down
-        $questionChildrenDrpDwn.children().remove().end();
+        },
+        (e) => {
+            if (singleClickCalled) {
+                // This is actually an error state
+                // it should never happen. The timeout would need
+                // to be adjusted because it may be too close
+                // console.log('Single & Double Click Captured');
+            }
+            else {
+                //console.log('Double Click Captured');
+                //console.log(e.target);
+                let node = $(e.target).closest("li");
+                LoadQuestionTab(node[0].id);                
+            }
 
-        //load child drop down
-        for (var i = 0; i < availableChildren.length; i++) {
-            let qIDX = buildData.BuildVersionList[currentVersionIDX].QuestionList.findIndex(x => x.QuestionID === parseInt(availableChildren[i]));
-            $questionChildrenDrpDwn.append("<option data-tokens='' value='" +
-                availableChildren[i]
-                + "' >" + buildData.BuildVersionList[currentVersionIDX]
-                    .QuestionList[qIDX]
-                    .QuestionTitle + "</option>");
-        }
-        $questionChildrenDrpDwn.selectpicker('refresh');
+            singleClickCalled = false;
+        },
+        '.jstree-anchor' 
+    );
+}
 
-        var qIDX = buildData.BuildVersionList[currentVersionIDX].QuestionList.findIndex(x => x.QuestionID === parseInt(selectedQuestion.id));
-        var qTitle = buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QuestionTitle;
+function LoadQuestionTab(loadID) {
+            /*Selected Info*/
+            let selectedQuestion = $buildTree.jstree('get_node', parseInt(loadID));
+            availableChildren = new Array();
 
-        $('#question-slide-out .question-tab-inner').attr('data-original-title', qTitle);
-        $('#question-slide-out .question-tab-inner').text(qTitle.substring(0, 10) + "...");
+            let qIDX = buildData.BuildVersionList[currentVersionIDX].QuestionList.findIndex(x => x.QuestionID === parseInt(loadID));
+            let qTitle = buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QuestionTitle;
+            //get children so if the end user wants to make conditional, they know what questions they can select;
+            availableChildren.splice(0, availableChildren.length);//resets array, and references to array
+            selectedQuestion.children.forEach((e, i, arr) => availableChildren.push(arr[i]));
+
+            //clear child questions drop down
+            $questionChildrenDrpDwn.children().remove().end();
 
 
-        //Set Question Info
-        $questionTitleTxt.val(buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QuestionTitle);
-        $questionTypeDrpDwn.selectpicker('val', buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QTypeCD);
+            let qTypeMeaning = buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QTypeMeaning;
+            if (qTypeMeaning === "MULTISELECT" || qTypeMeaning === "YESNO" || qTypeMeaning === "RADIOBUTTONS") {
 
-        buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].IsRequired ? $requiredToggle.bootstrapToggle('off') : $requiredToggle.bootstrapToggle('on');
+                AddQuestionOption(buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QOptions.length);
+            }
 
-        $questionSlideOut.removeClass('d-none').addClass('show-slide');
-        $('#question-text-editor').removeClass('d-none').addClass('show-slide');
-    });
+            $('#question-slide-out .question-tab-inner').attr('data-original-title', qTitle);
+            $('#question-slide-out .question-tab-inner').text(qTitle.substring(0, 10) + "...");
 
-    //No double click event, have to manually bind.
-    //https://github.com/vakata/jstree/issues/515
-    $buildTree.on('dblclick', '.jstree-anchor', function (e) {
-        var instance = $.jstree.reference(this),
-            node = instance.get_node(this);
 
-        $questionSlideOut.hasClass("q-show") ? null : $questionSlideOut.addClass("q-show");
+            //Set Question Info
+            $questionTitleTxt.val(buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QuestionTitle);
+            $questionTypeDrpDwn.selectpicker('val', buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QTypeCD);
 
-    });
+            buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].IsRequired ? $requiredToggle.bootstrapToggle('off') : $requiredToggle.bootstrapToggle('on');
+
+            $questionSlideOut.removeClass('d-none').addClass('show-slide');
+            $('#question-text-editor').removeClass('d-none').addClass('show-slide');
 
 }
+
+
 
 function BuildFormBind() {
 
@@ -264,15 +287,33 @@ function BuildFormBind() {
     });
 
     //Bind New Options for Questions
-    var newOptionHTML = ('<li class="q-option-list-item"><div class="q-option-manage"><i class="q-option-manage-icon q-option-delete far fa-2 fa-minus-square"></i></div ><input class="form-control q-option-text-input" type="text" value="">');
-    //newOptionHTML = newOptionHTML + '<select class="show-tick q-option-child-input selectpicker" title="Choose a child question..." data-style="btn-outline-primary" data-width="100%" data-live-search="true">';
-    //newOptionHTML = newOptionHTML + $questionChildrenDrpDwn.eq(0).clone().html() + '</select>';
+    $addQuestionOptionBtn.on("click", () => AddQuestionOption(1));
+}
 
-    $addQuestionOptionBtn.on("click", () => {
-        $("#new-option-placeholder").before(newOptionHTML + $('div.q-option-child-input')[0].outerHTML);
-        console.log($('div.q-option-child-input').eq(0).find('select').outerHTML);//.eq(0).clone().html());
-        //console.log($questionChildrenDrpDwn.eq(0).clone().html());
-    });
+function AddQuestionOption(cntOptions) {
+    var newOptionHTML = "";
+
+    for (var i = 0; i < cntOptions; i++) {
+
+        let newOptionID = $('ul.q-option-list .q-option-list-item').not('#new-option-placeholder').length + 1 + i;
+        newOptionHTML += '<li id="q-option-list-item-' + newOptionID + '" class="q-option-list-item"><div class="q-option-manage"><i class="q-option-manage-icon q-option-delete far fa-2 fa-minus-square"></i></div ><input class="form-control q-option-text-input" type="text" value="">';
+        newOptionHTML += '<select class="show-tick q-option-child-input selectpicker" title="Choose a child question..." data-style="btn-outline-primary" data-width="100%" data-live-search="true">';
+
+        //load child drop down
+        for (var j = 0; j < availableChildren.length; j++) {
+            let qIDX = buildData.BuildVersionList[currentVersionIDX].QuestionList.findIndex(x => x.QuestionID === parseInt(availableChildren[j]));
+            newOptionHTML += "<option data-tokens='' value='"
+                + availableChildren[j] + "' >"
+                + buildData.BuildVersionList[currentVersionIDX]
+                    .QuestionList[qIDX]
+                    .QuestionTitle + "</option>";
+        }
+        newOptionHTML += '</select></li>';
+    }
+
+    $("#new-option-placeholder").before(newOptionHTML);
+    $("#q-options-container .q-option-list .q-option-child-input").selectpicker('refresh');
+    
 }
 
 async function BuildDataInitialize(buildRequest) {
