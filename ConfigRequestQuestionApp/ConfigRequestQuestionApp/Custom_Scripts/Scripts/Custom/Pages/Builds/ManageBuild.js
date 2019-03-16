@@ -205,13 +205,18 @@ function QuestionTreeBind() {
                 //console.log('Double Click Captured');
                 //console.log(e.target);
                 let node = $(e.target).closest("li");
-                LoadQuestionTab(node[0].id);                
+                LoadQuestionTab(node[0].id);  
+                popOutQuestion();
             }
 
             singleClickCalled = false;
         },
         '.jstree-anchor' 
     );
+}
+
+function popOutQuestion() {
+    $questionSlideOut.hasClass("q-show") ? null : $questionSlideOut.addClass("q-show");
 }
 
 function LoadQuestionTab(loadID) {
@@ -247,7 +252,6 @@ function LoadQuestionTab(loadID) {
 
             $questionSlideOut.removeClass('d-none').addClass('show-slide');
             $('#question-text-editor').removeClass('d-none').addClass('show-slide');
-
 }
 
 
