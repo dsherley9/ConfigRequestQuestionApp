@@ -340,7 +340,7 @@ form.manage-build-form {
     cursor: pointer;
 }
 
-.question-tab div {
+.question-tab .question-tab-inner {
     text-align: left;
     position: relative;
     right: 115px;

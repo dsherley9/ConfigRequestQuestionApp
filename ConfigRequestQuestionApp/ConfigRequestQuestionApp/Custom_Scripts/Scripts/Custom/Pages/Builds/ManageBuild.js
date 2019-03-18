@@ -23,6 +23,8 @@ var $addQuestionOptionBtn = $('i.q-option-add');
 var $deleteQuestionOptionBtn = $('i.q-option-delete');
 var $optionsContainer = $('#q-options-container');
 var $questionChildrenDrpDwn = $('#q-options-list');
+var $questionTabSpinner = $('#q-tab-spinner');
+var $questionTabLabel = $('#q-tab-label');
 
 var $questionTitleTxt = $('input#question-title');
 var $requiredToggle = $('#required-toggle');
@@ -186,6 +188,8 @@ function QuestionTreeBind() {
     var singleClickCalled = false;
     $buildTree.singleAndDouble(
         (e) => {
+            $questionTabLabel.text("Loading...");
+            $questionTabSpinner.show();
             singleClickCalled = true;
             //console.log('Single Click Captured');
             //console.log(e.target);
@@ -204,6 +208,8 @@ function QuestionTreeBind() {
             else {
                 //console.log('Double Click Captured');
                 //console.log(e.target);
+                $questionTabLabel.text("Loading...");
+                $questionTabSpinner.show();
                 let node = $(e.target).closest("li");
                 LoadQuestionTab(node[0].id);  
                 popOutQuestion();
@@ -216,7 +222,10 @@ function QuestionTreeBind() {
 }
 
 function popOutQuestion() {
-    $questionSlideOut.hasClass("q-show") ? null : $questionSlideOut.addClass("q-show");
+    setTimeout(() => {
+        $questionSlideOut.hasClass("q-show") ? null : $questionSlideOut.addClass("q-show");
+    }, 200);
+    
 }
 
 function LoadQuestionTab(loadID) {
@@ -241,8 +250,7 @@ function LoadQuestionTab(loadID) {
             }
 
             $('#question-slide-out .question-tab-inner').attr('data-original-title', qTitle);
-            $('#question-slide-out .question-tab-inner').text(qTitle.substring(0, 10) + "...");
-
+            $questionTabLabel.text(qTitle.substring(0, 10) + "...");
 
             //Set Question Info
             $questionTitleTxt.val(buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QuestionTitle);
