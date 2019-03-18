@@ -260,6 +260,7 @@ function LoadQuestionTab(loadID) {
 
             $questionSlideOut.removeClass('d-none').addClass('show-slide');
             $('#question-text-editor').removeClass('d-none').addClass('show-slide');
+            $questionTabSpinner.hide('slow');
 }
 
 
