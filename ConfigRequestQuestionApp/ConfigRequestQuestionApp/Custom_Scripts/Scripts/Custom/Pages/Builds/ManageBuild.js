@@ -18,7 +18,7 @@ var $searchTreeTxt = $('#txt-tree-search');
 /*Question Form*/
 var $questionSlideOut = $('#question-slide-out');
 var $questionTypeDrpDwn = $('.question-type-drp-dwn .selectpicker');
-var $questionOptionsList = $('ul.q-option-list');
+var $questionOptionsList = $('#q-option-list');
 var $addQuestionOptionBtn = $('i.q-option-add');
 var $deleteQuestionOptionBtn = $('i.q-option-delete');
 var $optionsContainer = $('#q-options-container');
@@ -243,11 +243,31 @@ function LoadQuestionTab(loadID) {
             $questionChildrenDrpDwn.children().remove().end();
 
 
+            //Always reset options form with 0    
+            ResetQuestionOptions(0);
+
             let qTypeMeaning = buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QTypeMeaning;
             if (qTypeMeaning === "MULTISELECT" || qTypeMeaning === "YESNO" || qTypeMeaning === "RADIOBUTTONS") {
 
+                //Add option controls to form
                 AddQuestionOption(buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QOptions.length);
+
+                //Populate controls with existing data
+
+                let qI = 0;
+                $questionOptionsList.find('.q-option-list-item').not('#new-option-placeholder').each(
+                    function () {
+                        //load option
+                        $(this).find('.q-option-text-input')
+                            .val(buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QOptions[qI].LabelText);
+                        $(this).find('.selectpicker')
+                            .selectpicker('val', buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QOptions[qI].ChildID)
+                            .selectpicker('refresh');
+                        //next option
+                        ++qI;
+                    });
             }
+
 
             $('#question-slide-out .question-tab-inner').attr('data-original-title', qTitle);
             $questionTabLabel.text(qTitle.substring(0, 10) + "...");
@@ -269,11 +289,9 @@ function BuildFormBind() {
 
     //Question Slide Out Click
     $('#question-slide-out .question-tab').on("click", () => {
-
         if ($questionSlideOut.hasClass('q-show')) {
             $('#question-text-editor').removeClass('q-show');
         }
-
         $questionSlideOut.toggleClass("q-show");
     });
 
@@ -290,17 +308,45 @@ function BuildFormBind() {
         }
     });
 
+
     //Inner Question Slide Out - Text Editor
     $('#question-text-go-back').on('click', () => {
         $('#question-text-editor').removeClass('q-show');
+        e.stopPropagation();
     });
 
     $('#what-this-btn').on("click", () => {
         $('#question-text-editor').toggleClass("q-show");
+        e.stopPropagation();
     });
 
     //Bind New Options for Questions
-    $addQuestionOptionBtn.on("click", () => AddQuestionOption(1));
+    $addQuestionOptionBtn.on("click", () => {
+        AddQuestionOption(1);
+        e.stopPropagation();
+    });
+
+    //Bind Delete Options for Questions
+    $questionOptionsList.on("click", '.q-option-delete', (e) => {
+        $(e.currentTarget).closest("li.q-option-list-item").remove();
+        e.stopPropagation();
+    });
+
+}
+
+function ResetQuestionOptions(cntDefault) {
+
+    $questionOptionsList.children('.q-option-list-item').not('#new-option-placeholder').remove();
+
+
+    if (cntDefault >= 1) {
+        AddQuestionOption(cntDefault);
+    }
+
+    //if (callback && typeof callback === 'function') {
+    //    callback(optDefault);
+    //    // Do some other stuff if callback is exists.
+    //}
 }
 
 function AddQuestionOption(cntOptions) {
@@ -326,7 +372,6 @@ function AddQuestionOption(cntOptions) {
 
     $("#new-option-placeholder").before(newOptionHTML);
     $("#q-options-container .q-option-list .q-option-child-input").selectpicker('refresh');
-    
 }
 
 async function BuildDataInitialize(buildRequest) {
