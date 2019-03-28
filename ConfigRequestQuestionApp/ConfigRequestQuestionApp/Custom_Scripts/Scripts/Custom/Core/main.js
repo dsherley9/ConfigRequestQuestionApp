@@ -12,6 +12,12 @@ $(document).ready(function () {
         enableTime: true
     });
 
+    //Bootstrap Notify Default
+    $.notifyDefaults({
+        type: 'success',
+        allow_dismiss: false
+    });
+
     //Quill
     var toolbarOptions = [
         ['bold', 'italic', 'underline', 'strike'],        // toggled buttons

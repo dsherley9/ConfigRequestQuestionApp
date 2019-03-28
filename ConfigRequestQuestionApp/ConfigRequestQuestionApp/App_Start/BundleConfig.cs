@@ -36,6 +36,7 @@ namespace ConfigRequestQuestionApp
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Custom_Scripts/Styles/Custom/Core/main.css"
+                      , "~/Custom_Scripts/Styles/Custom/Core/animate.css"
                       , "~/Custom_Scripts/Scripts/DataTables/dataTables.bootstrap4.min.css"
                       , "~/Custom_Scripts/Scripts/Dropzone/dropzone.css"
                       , "~/Custom_Scripts/Scripts/vakata-jstree-bc5187e/dist/themes/default/style.min.css"
@@ -52,6 +53,7 @@ namespace ConfigRequestQuestionApp
                     , "~/Custom_Scripts/Scripts/vakata-jstree-bc5187e/dist/jstree.min.js"
                     , "~/Custom_Scripts/Scripts/bootstrap-select-1.13.2/dist/js/bootstrap-select.min.js"
                     , "~/Custom_Scripts/Scripts/bootstrap4-toggle-3.4.0/js/bootstrap4-toggle.min.js"
+                    , "~/Custom_Scripts/Scripts/bootstrap-notify-3.1.3/dist/bootstrap-notify.min.js"
                 ));
 
             bundles.Add(new StyleBundle("~/bundles/Builds/Build").Include(
