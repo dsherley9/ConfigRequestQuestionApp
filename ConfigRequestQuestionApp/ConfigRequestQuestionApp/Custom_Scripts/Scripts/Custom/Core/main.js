@@ -76,7 +76,16 @@ $(document).ready(function () {
 });
 
 
-
+function skeleton(source, isArray) {
+    var o = Array.isArray(source) ? [] : {};
+    for (var key in source) {
+        if (source.hasOwnProperty(key)) {
+            var t = typeof source[key];
+            o[key] = t == 'object' ? skeleton(source[key]) : { string: '', number: 0, boolean: false }[t];
+        }
+    }
+    return o;
+}
 
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = window.location.search.substring(1),

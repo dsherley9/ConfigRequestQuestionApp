@@ -62,10 +62,22 @@
                             <div class="tab-pane fade" id="v-pills-questions" role="tabpanel" aria-labelledby="v-pills-question-tab">
                                 <div class="col-12">
                                     <div class="row">
-                                        <div class="form-group col-12">
+                                        <div class="form-group col-6">
                                             <div class="col-12">
                                                 <label for="txt-tree-search">Search Tree:</label>
                                                 <input class="form-control" id="txt-tree-search" type="text">
+                                            </div>
+
+                                            <div id="manage-tree" class="flex-row d-flex flex-wrap">
+                                                <div class="col-xl-4 col-lg-12">
+                                                    <input id="btn-add-question" type="button" class="btn btn-success w-100" value="Add Question" />
+                                                </div>
+                                                <div class="col-xl-4 col-lg-12">
+                                                    <input type="button" class="btn btn-warning w-100" value="Edit Question" disabled />
+                                                </div>
+                                                <div class="col-xl-4 col-lg-12">
+                                                    <input type="button" class="btn btn-danger w-100" value="Delete Question" disabled />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -107,7 +119,13 @@
                                                     </div>
                                                 </div>
                                                 <div id="q-options-container" class="manage-build-field col-lg-12" style="display: none;">
-                                                    <h3>Options</h3>
+                                                    <div id="options-header">
+                                                        <h3 id="options-header-title">Options</h3>
+                                                        <div id="q-options-conditional-wrapper">
+                                                            <input id="conditional-toggle" type="checkbox" checked data-toggle="toggle" data-on="Not Conditional" data-height="100%" data-width="100%" data-off="Conditional" data-onstyle="info" data-offstyle="dark">
+                                                        </div>
+                                                    </div>
+                                                    
                                                     <ul id="q-option-list" class="q-option-list">
                                                         @*<li id="q-option-list-item-1"class="q-option-list-item">
                                                                 <div class="q-option-manage">

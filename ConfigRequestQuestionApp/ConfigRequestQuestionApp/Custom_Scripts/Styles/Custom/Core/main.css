@@ -445,6 +445,21 @@ div.q-option-child-input {
     color: green;
 }
 
+div#options-header {
+    position: relative;
+    margin: 10px 0;
+}
+#options-header-title {
+    display: inline-block;
+}
+
+#q-options-conditional-wrapper {
+    width: 200px;
+    display: inline-block;
+    position: absolute;
+    right: 15px;
+}
+
 /*#new-option-placeholder{
     cursor: pointer;
 }*/
@@ -474,4 +489,8 @@ div.q-option-child-input {
 div#q-alerts-btn-wrapper {
     display: inline-block;
     width: calc(33.3% - 10px);
+}
+
+div#manage-tree .btn {
+    margin: 10px 0;
 }

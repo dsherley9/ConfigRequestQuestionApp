@@ -27,11 +27,12 @@ var $questionTabLabel = $('#q-tab-label');
 
 var $questionTitleTxt = $('input#question-title');
 var $requiredToggle = $('#required-toggle');
+var $conditionalToggle = $('#conditional-toggle');
 
 /*-------------------------------------------------------------
  * Form Objects
  * ----------------------------------------------------------*/
-var buildData = {};
+var buildData = new Object();
 var currentVersionIDX = 0;
 var availableChildren;
 var singleClickCalled = false;
@@ -219,6 +220,32 @@ function QuestionTreeBind() {
         },
         '.jstree-anchor'
     );
+
+    $('#btn-add-question').on('click', () => {
+        let node = $buildTree.jstree('get_selected');
+        let nodeData; 
+        let qIDX;
+
+        if (node.length > 0) {
+            nodeData = $buildTree.jstree('get_node', node[0]);
+            qIDX = buildData.BuildVersionList[currentVersionIDX].QuestionList.findIndex(x => x.QuestionID == nodeData.id);
+
+            if (!buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].IsConditional && nodeData.children.length > 0) {
+                errorNotify("A non-conditional question can only have one child!", "danger");
+            }
+            else {
+                console.log(nodeData);
+                $buildTree.jstree('create_node', nodeData.id, "New Question", "last", function (cNode) {
+                    console.log(cNode);
+                    buildData.BuildVersionList[currentVersionIDX].addQuestion(cNode.id, cNode.parent);
+                });
+            }           
+        } else {
+            errorNotify("Please select a node to add a question to.", "danger");
+        }
+    });
+
+
 }
 
 function popOutQuestion() {
@@ -239,7 +266,7 @@ function AddQuestionOption(cntOptions) {
 
         //load child drop down
         for (var j = 0; j < availableChildren.length; j++) {
-            let qIDX = buildData.BuildVersionList[currentVersionIDX].QuestionList.findIndex(x => x.QuestionID === parseInt(availableChildren[j]));
+            let qIDX = buildData.BuildVersionList[currentVersionIDX].QuestionList.findIndex(x => x.QuestionID == availableChildren[j]);
             newOptionHTML += "<option data-tokens='' value='"
                 + availableChildren[j] + "' >"
                 + buildData.BuildVersionList[currentVersionIDX]
@@ -270,10 +297,10 @@ function ResetQuestionOptions(cntDefault) {
 
 function LoadQuestionInfo(loadID) {
     /*Selected Info*/
-    let selectedQuestion = $buildTree.jstree('get_node', parseInt(loadID));
+    let selectedQuestion = $buildTree.jstree('get_node', loadID);
     availableChildren = new Array();
 
-    let qIDX = buildData.BuildVersionList[currentVersionIDX].QuestionList.findIndex(x => x.QuestionID === parseInt(loadID));
+    let qIDX = buildData.BuildVersionList[currentVersionIDX].QuestionList.findIndex(x => x.QuestionID == loadID);
     let qTitle = buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QuestionTitle;
     //get children so if the end user wants to make conditional, they know what questions they can select;
     availableChildren.splice(0, availableChildren.length);//resets array, and references to array
@@ -317,6 +344,7 @@ function LoadQuestionInfo(loadID) {
     $questionTypeDrpDwn.selectpicker('val', buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QTypeCD);
 
     buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].IsRequired ? $requiredToggle.bootstrapToggle('off') : $requiredToggle.bootstrapToggle('on');
+    buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].IsConditional ? $conditionalToggle.bootstrapToggle('off') : $conditionalToggle.bootstrapToggle('on');
 
     $questionSlideOut.removeClass('d-none').addClass('show-slide');
     $('#question-text-editor').removeClass('d-none').addClass('show-slide');
@@ -325,12 +353,43 @@ function LoadQuestionInfo(loadID) {
 
 async function LoadBuildInfo() {
     try {
+        
         //Get Data
         buildData = await GetBuildData(buildRequest = {
             type: getUrlParameter('type'),
             bID: getUrlParameter('bID'),
             vID: 0 //Defaulting to 0 for now, which will load the current build version.
         });
+
+
+        //Build Functions
+        buildData.addVersion = () => { };
+        buildData.templateVersion = skeleton(buildData.BuildVersionList[0]);
+        buildData.templateVersion.JSTree.splice(1);
+        buildData.templateVersion.QuestionList.splice(1);
+        buildData.templateVersion.QuestionList[0].QOptions.splice(1);
+        for (let i = 0; i < buildData.BuildVersionList.length; i++) {
+            //Add Build Version List Functions
+            buildData.BuildVersionList[i].addQuestion = function (nID, pID) {
+                let newQ = Object.assign({}, buildData.templateVersion.QuestionList[0]);
+                newQ.QuestionTitle = "New Question";
+                newQ.parentQID = pID;
+                newQ.QuestionID = nID;
+                newQ.QTypeCD = 1;
+                newQ.QTypeMeaning = "FREETEXT";
+                this.QuestionList.push(newQ);
+             };
+
+            for (let j = 0; j < buildData.BuildVersionList[i].QuestionList.length; j++) {
+                 //Add Question List Functions
+                buildData.BuildVersionList[i].QuestionList[j].xyz = () => { };
+
+                for (var k = 0; k < buildData.BuildVersionList[i].QuestionList[j].QOptions.length; k++) {
+                    //Add Question Options Functions
+                    buildData.BuildVersionList[i].QuestionList[j].QOptions[k].xyz = () => { };
+                }
+            }
+        }
 
         currentVersionIDX = buildData.BuildVersionList.findIndex(x => x.VersionId === parseInt(buildData.SelectedVersion));
 
