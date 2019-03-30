@@ -92,6 +92,7 @@ async function InitializeForm() {
             formLoad.forEach((e, i, arr) => console.log(arr[i]));
             $('.manage-build-loader').hide("slow");
             $('.manage-build-form').removeClass('d-none');
+            PopulateQuestions();
         });
 
     } catch (e) {
@@ -246,6 +247,47 @@ function QuestionTreeBind() {
     });
 
 
+}
+
+
+async function PopulateQuestions() {
+
+    const questionList = await GetQuestions();
+    $('#all-q-datatable').DataTable({
+        data: questionList,
+        "paging": false,
+        "ordering": false,
+        "info": false,
+        "scrollY": "500px",
+        "scrollCollapse": true,
+        "columns": [
+            { "data": "QuestionID" },
+            { "data": "QuestionTitle" },
+        ],
+        "columnDefs": [{
+            "targets": [0],
+            "visible": false,
+        },
+            {
+                "sWidth": "20%",
+                "mData": 1
+                //"targets": [1],
+                //render: $.fn.dataTable.render.ellipsis(30)
+            }
+
+        ],
+        fixedColumns:false
+    });
+
+    var table = $('#all-q-datatable').DataTable();
+
+    $('#all-q-datatable tbody').on('click', 'tr', function () {
+        let data = table.row(this).data();
+        console.log(data);
+        alert('You clicked on ' + data.QuestionTitle + '\'s row');
+    });
+
+    //console.log(questionList);
 }
 
 function popOutQuestion() {
@@ -508,6 +550,31 @@ async function GetDropDowns() {
     }
 
 }
+
+
+async function GetQuestions() {
+
+    try {
+
+        let result;
+        let data = {};
+
+        result = $.ajax({
+            type: "POST",
+            url: "/Builds/GetAllQuestions",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            dataType: "json"
+        });
+
+        return result;
+
+    } catch (err) {
+        return new error(err);
+    }
+
+}
+
 
 function PostBuildData() {
     $.ajax({

@@ -494,3 +494,18 @@ div#q-alerts-btn-wrapper {
 div#manage-tree .btn {
     margin: 10px 0;
 }
+
+div#all-q-datatable_wrapper table thead {
+    display:none;
+}
+
+div#all-q-datatable_filter {
+    text-align: left;
+    position: relative;
+    right: 110%;
+    margin: 10px 0;
+}
+
+div#all-q-datatable_filter label input {
+    width: 150%;
+}

@@ -18,6 +18,7 @@ namespace ConfigRequestQuestionApp.Controllers
         //Build Controller Objects//
         private List<Build> buildList;
         private Build buildSelected;
+        private List<Question> questionList;
 
         #endregion
 
@@ -83,6 +84,14 @@ namespace ConfigRequestQuestionApp.Controllers
             return buildJson.Serialize(buildSelected);
             //return buildSelected.BuildVersionList.Where(x => x.VersionId == buildSelected.SelectedVersion).FirstOrDefault().BuildTreeJson;
         }
+
+        [HttpPost]
+        public string GetAllQuestions()
+        {
+            LoadQuestions();
+            return new JavaScriptSerializer().Serialize(questionList);
+        }
+
 
         [HttpPost]
         public void PostBuildData(Build buildData)
@@ -323,6 +332,56 @@ namespace ConfigRequestQuestionApp.Controllers
 
                 dbCon.Close();
                 loadVersion.BuildQuestionStructure();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+
+        }
+
+
+        private void LoadQuestions()
+        {
+
+            Question questionItem = new Question();
+            questionList = new List<Question>();
+
+            try
+            {
+                //Create Connection Properties
+                SqlConnection dbCon = new SqlConnection(
+                            WebConfigurationManager.ConnectionStrings["amsRulesDB"].ConnectionString
+                            );
+
+                //Create Command
+                SqlCommand cmd = new SqlCommand("GetQuestions", dbCon);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandTimeout = 60;
+
+                //Open Connection
+                dbCon.Open();
+
+                //Load into reader
+                SqlDataReader dr = cmd.ExecuteReader();
+
+
+                while (dr.Read())
+                {
+                    questionItem = new Question();
+                    questionItem.QuestionID = int.Parse(dr[dr.GetOrdinal("question_id")].ToString());
+                    questionItem.QuestionTitle = dr[dr.GetOrdinal("question_title")].ToString();
+                    questionItem.QTypeCD = int.Parse(dr[dr.GetOrdinal("q_type_cd")].ToString());
+                    questionItem.QType = dr[dr.GetOrdinal("question_type")].ToString();
+                    questionItem.QTypeMeaning = dr[dr.GetOrdinal("question_type_meaning")].ToString();
+                    questionItem.IsBuildInlay = dr.GetBoolean(dr.GetOrdinal("_build_inlay_ind"));
+                    questionItem.BuildInlayID = int.Parse(dr[dr.GetOrdinal("inlay_q_build_version_id")].ToString());
+                    questionList.Add(questionItem);
+                }
+
+                dbCon.Close();
+
             }
             catch (Exception)
             {

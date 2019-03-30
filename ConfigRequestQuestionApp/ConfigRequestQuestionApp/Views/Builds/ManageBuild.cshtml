@@ -60,32 +60,62 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="v-pills-questions" role="tabpanel" aria-labelledby="v-pills-question-tab">
-                                <div class="col-12">
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <div class="col-12">
-                                                <label for="txt-tree-search">Search Tree:</label>
-                                                <input class="form-control" id="txt-tree-search" type="text">
+                                <div class="row">
+                                    <div id="questions-tools-wrapper" class="col-4">
+                                        <div id="q-tools-header">
+                                            <h5>Tree Tools</h5>
+
+                                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" id="all-Q-tab" data-toggle="tab" href="#all-Q" role="tab" aria-controls="all-Q" aria-selected="false">All Questions</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="all-B-tab" data-toggle="tab" href="#all-B" role="tab" aria-controls="all-B" aria-selected="false">All Builds</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="this-Q-tab" data-toggle="tab" href="#this-Q" role="tab" aria-controls="this-Q" aria-selected="true">Questions</a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content" id="myTabContent">
+                                                <div class="tab-pane fade show active" id="all-Q" role="tabpanel" aria-labelledby="all-Q-tab">
+                                                    <div class="q-tool-table-wrapper">
+                                                        <table id="all-q-datatable" class="table table-striped table-bordered table-hover" style="width:100%;">
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="all-B" role="tabpanel" aria-labelledby="all-B-tab">...</div>
+                                                <div class="tab-pane fade" id="this-Q" role="tabpanel" aria-labelledby="this-Q-tab">...</div>
                                             </div>
 
-                                            <div id="manage-tree" class="flex-row d-flex flex-wrap">
-                                                <div class="col-xl-4 col-lg-12">
-                                                    <input id="btn-add-question" type="button" class="btn btn-success w-100" value="Add Question" />
+                                        </div>
+                                    </div>
+                                    <div id="question-tree-wrapper" class="col-8">
+                                        <div class="row">
+                                            <div class="form-group col-11">
+                                                <div class="col-12">
+                                                    <label for="txt-tree-search">Search Tree:</label>
+                                                    <input class="form-control" id="txt-tree-search" type="text">
                                                 </div>
-                                                <div class="col-xl-4 col-lg-12">
-                                                    <input type="button" class="btn btn-warning w-100" value="Edit Question" disabled />
-                                                </div>
-                                                <div class="col-xl-4 col-lg-12">
-                                                    <input type="button" class="btn btn-danger w-100" value="Delete Question" disabled />
+                                                <div id="manage-tree" class="flex-row d-flex flex-wrap">
+                                                    <div class="col-xl-4 col-lg-12">
+                                                        <input id="btn-add-question" type="button" class="btn btn-success w-100" value="Add Question" />
+                                                    </div>
+                                                    <div class="col-xl-4 col-lg-12">
+                                                        <input type="button" class="btn btn-warning w-100" value="Edit Question" disabled />
+                                                    </div>
+                                                    <div class="col-xl-4 col-lg-12">
+                                                        <input type="button" class="btn btn-danger w-100" value="Delete Question" disabled />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div id="build-js-tree">
+                                        <div class="row">
+                                            <div id="build-js-tree">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                
                                 <div id="question-slide-out" class="question-slide-out d-none">
                                     @*<div class="question-top"></div>*@
                                     <div class="question-slide-out-inner">
