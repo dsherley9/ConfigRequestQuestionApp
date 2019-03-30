@@ -299,12 +299,14 @@ function popOutQuestion() {
 
 function AddQuestionOption(cntOptions) {
     var newOptionHTML = "";
+    let addedOptions = [];
 
     for (var i = 0; i < cntOptions; i++) {
 
         let newOptionID = $('ul.q-option-list .q-option-list-item').not('#new-option-placeholder').length + 1 + i;
         newOptionHTML += '<li id="q-option-list-item-' + newOptionID + '" class="q-option-list-item"><div class="q-option-manage"><i class="q-option-manage-icon q-option-delete far fa-2 fa-minus-square"></i></div ><input class="form-control q-option-text-input" type="text" value="">';
         newOptionHTML += '<select class="show-tick q-option-child-input selectpicker" title="Choose a child question..." data-style="btn-outline-primary" data-width="100%" data-live-search="true">';
+        addedOptions.push(newOptionID);
 
         //load child drop down
         for (var j = 0; j < availableChildren.length; j++) {
@@ -319,7 +321,12 @@ function AddQuestionOption(cntOptions) {
     }
 
     $("#new-option-placeholder").before(newOptionHTML);
-    $("#q-options-container .q-option-list .q-option-child-input").selectpicker('refresh');
+
+    while (addedOptions.length > 0) {
+        $("#q-options-container .q-option-list #q-option-list-item-" + addedOptions.pop() + " .q-option-child-input").selectpicker('refresh');
+    }
+
+    
 }
 
 function ResetQuestionOptions(cntDefault) {
