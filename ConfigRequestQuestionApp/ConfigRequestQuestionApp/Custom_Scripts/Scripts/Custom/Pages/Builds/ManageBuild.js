@@ -165,8 +165,16 @@ function QuestionTreeBind() {
         'core': {
             'data': buildData.BuildVersionList[currentVersionIDX].JSTree
             , "check_callback": true
+            , "themes": {
+                "variant": "large"
+            }
         }
-        , "plugins": ["dnd", "search"]
+        , "plugins": ["dnd", "search", "types"]
+        , "types": {
+            "default": {
+                "icon": "fas fa-dice-d6"
+            }
+        }
     });
 
     //Bind Tree Search
@@ -287,8 +295,68 @@ async function PopulateQuestions() {
         alert('You clicked on ' + data.QuestionTitle + '\'s row');
     });
 
+
+    RefreshQuestionList();
+    
+
     //console.log(questionList);
 }
+
+
+function RefreshQuestionList() {
+
+    var options = {
+        valueNames: ['QuestionTitle']
+    };
+
+    let thisQHTML = "";
+    buildData.BuildVersionList[currentVersionIDX].QuestionList.forEach((e, i, arr) => {
+        thisQHTML += "<li id='" + arr[i].QuestionID + "' class='list-group-item list-group-item-action'><h6 class='QuestionTitle'>" + arr[i].QuestionTitle + "</h6></li>";
+    });
+
+    $('#this-q-list ul.list').append(thisQHTML);
+    var thisQList = new List('this-q-list', options);
+
+
+    //For making the tree tools questions draggable
+    $('#this-q-list ul.list li').draggable({
+        cursor: 'move',
+        helper: 'clone',
+        start: function (e, ui) {
+            var item = $("<div>", {
+                id: "jstree-dnd",
+                class: "jstree-default"
+            });
+            $("<i>", {
+                class: "jstree-icon jstree-er"
+            }).appendTo(item);
+            item.append($(this).text());
+            //var idRoot = $(this).attr("id").slice(0, -2);
+            //var newId = idRoot + "-" + ($("#tree [id|='" + idRoot + "'][class*='jstree-node']").length + 1);
+            var newId = $(this).attr("id");
+            console.log(newId);
+            return $.vakata.dnd.start(e, {
+                jstree: true,
+                obj: makeTreeItem(this),
+                nodes: [{
+                    id: newId,
+                    text: $(this).text().trim(),
+                    icon: "fas fa-dice-d6"
+                }]
+            }, item);
+        }
+    });
+
+
+    function makeTreeItem(el) {
+        return $("<a>", {
+            id: $(el).attr("id") + "_anchor",
+            class: "jstree-anchor",
+            href: "#"
+        });
+    }
+}
+
 
 function popOutQuestion() {
     setTimeout(() => {
@@ -328,6 +396,7 @@ function AddQuestionOption(cntOptions) {
 
     
 }
+
 
 function ResetQuestionOptions(cntDefault) {
 

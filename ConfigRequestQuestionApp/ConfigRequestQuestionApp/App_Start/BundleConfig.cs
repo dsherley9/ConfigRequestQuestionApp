@@ -9,7 +9,9 @@ namespace ConfigRequestQuestionApp
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js"));
+                        "~/Scripts/jquery-{version}.js",
+                        "~/Custom_Scripts/Scripts/jquery-ui-1.12.1.custom/jquery-ui.min.js"
+                        ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -42,6 +44,7 @@ namespace ConfigRequestQuestionApp
                       , "~/Custom_Scripts/Scripts/vakata-jstree-bc5187e/dist/themes/default/style.min.css"
                       , "~/Custom_Scripts/Scripts/bootstrap-select-1.13.2/dist/css/bootstrap-select.min.css"
                       , "~/Custom_Scripts/Scripts/bootstrap4-toggle-3.4.0/css/bootstrap4-toggle.min.css"
+                      , "~/Custom_Scripts/Scripts/jquery-ui-1.12.1.custom/jquery-ui.min.css"
                       ));
 
             bundles.Add(new StyleBundle("~/bundles/custscripts").Include(
@@ -54,6 +57,7 @@ namespace ConfigRequestQuestionApp
                     , "~/Custom_Scripts/Scripts/bootstrap-select-1.13.2/dist/js/bootstrap-select.min.js"
                     , "~/Custom_Scripts/Scripts/bootstrap4-toggle-3.4.0/js/bootstrap4-toggle.min.js"
                     , "~/Custom_Scripts/Scripts/bootstrap-notify-3.1.3/dist/bootstrap-notify.min.js"
+                    , "~/Custom_Scripts/Scripts/list-js/list.js"
                 ));
 
             bundles.Add(new StyleBundle("~/bundles/Builds/Build").Include(
