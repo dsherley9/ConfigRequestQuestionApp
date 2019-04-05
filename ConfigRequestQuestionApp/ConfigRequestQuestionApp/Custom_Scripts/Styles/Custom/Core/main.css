@@ -600,6 +600,10 @@ div#q-tools-inner {
     margin: 0 10px;
 }
 
+#this-q-list ul {
+    width: 99%;
+}
+
 #this-q-list .list-group-item{
     margin: 5px 0;
     border-radius: 50px;
