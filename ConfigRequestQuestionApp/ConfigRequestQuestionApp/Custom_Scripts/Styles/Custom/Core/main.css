@@ -528,6 +528,11 @@ div#all-q-datatable_filter label input {
     font-size: 13pt;
 }
 
+#build-js-tree .jstree-anchor.jstree-clicked {
+    background-color: #007bff;
+    color: #fff;
+}
+
 
 /*Question Tools*/
 
@@ -563,11 +568,40 @@ div#q-tools-inner {
     margin: 0 10px;
 }
 
-#this-q-list .list-group-item {
+#this-q-list .list-group-item{
     margin: 5px 0;
-    border-radius: 20px;
+    border-radius: 50px;
+}
+
+#this-q-list .list-group-item:not(.locked) {
     cursor: grab;
 }
+
+#this-q-list .list-group-item.locked {
+    cursor: pointer;
+}
+
+#this-q-list li .question-props {
+    position: absolute;
+    right: 5%;
+    display: inline-block;
+    top: 20%;
+    font-size: 1.25rem;
+}
+
+#this-q-list .question-props .prop-item {
+    margin: 0 0.35rem;
+}
+
+#this-q-list li .question-props .prop-item.in-tree {
+    color: rgb(0, 177, 106);
+}
+
+#this-q-list li.selected-question {
+    background-color: #007bff;
+    color: #fff;
+}
+
 
 input#this-q-search {
     display: inline-block;

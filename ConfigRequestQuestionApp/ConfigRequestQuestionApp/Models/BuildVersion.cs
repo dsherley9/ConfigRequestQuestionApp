@@ -164,6 +164,15 @@ namespace ConfigRequestQuestionApp.Models
                 set { _parent = value; }
             }
 
+            private string _type;
+
+            public string type
+            {
+                get { return _type; }
+                set { _type = value; }
+            }
+
+
             private string _text;
 
             public string text
@@ -358,7 +367,10 @@ namespace ConfigRequestQuestionApp.Models
                 x = new BuildJTree
                 {
                     id = item.QuestionID.ToString(),
-                    parent = item.ParentQID == 0 ? "#" : item.ParentQID.ToString(),
+                    parent = item.NodeLevel == 1 ? "#" : item.ParentQID.ToString(),
+                    type = item.NodeLevel == 1 ? 
+                            "root-" + (item.IsConditional ? "conditional" : "direct") 
+                           :"leaf-" + (item.IsConditional ? "conditional" : "direct"),
                     text = item.QuestionTitle
                 };
 

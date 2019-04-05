@@ -12,7 +12,7 @@ var $verionNumTxt = $('.manage-build-field #version-num');
 
 /*Question Tree*/
 var $buildTree = $('#build-js-tree');
-var $searchTreeTxt = $('#txt-tree-search');
+var $thisQSearch = $('#this-q-search');
 
 /*Question Form*/
 var $questionSlideOut = $('#question-slide-out');
@@ -92,7 +92,7 @@ async function InitializeForm() {
             formLoad.forEach((e, i, arr) => console.log(arr[i]));
             $('.manage-build-loader').hide("slow");
             $('.manage-build-form').removeClass('d-none');
-            PopulateQuestions();
+            RefreshQuestionList();
         });
 
     } catch (e) {
@@ -171,22 +171,44 @@ function QuestionTreeBind() {
         }
         , "plugins": ["dnd", "search", "types"]
         , "types": {
-            "default": {
-                "icon": "fas fa-dice-d6"
+            "root-direct": {
+                "icon": "fas fa-archway fa-grip-lines"
+                ,"max_children": 1
+            }
+            ,"root-conditional": {
+                "icon": "fas fa-sitemap"
+                ,"max_children": -1
+            }
+            ,"leaf-direct": {
+                "icon": "fas fa-grip-lines"
+                ,"max_children": 1
+            }
+            ,"leaf-conditional": {
+                "icon": "fas fa-sitemap"
+                ,"max_children": -1
             }
         }
     });
 
     //Bind Tree Search
     var to = false;
-    $searchTreeTxt.keyup(function () {
+    $thisQSearch.keyup(function () {
         if (to) { clearTimeout(to); }
         to = setTimeout(function () {
-            var v = $searchTreeTxt.val();
+            var v = $thisQSearch.val();
             $buildTree.jstree(true).search(v);
         }, 250);
     });
 
+
+    $buildTree.bind(
+        "changed.jstree", function (evt, data) {
+            //selected node object: data.node;
+            //console.log(evt);
+            //console.log(data);
+            SelectQuestionListItem(data.node.id, true);
+        }
+    );
 
     /*-------------------------------------------------------------------------------------------------
      * This is very important for the JSTree. It's a handler for single and double clicks. Though it 
@@ -246,6 +268,7 @@ function QuestionTreeBind() {
                 console.log(nodeData);
                 $buildTree.jstree('create_node', nodeData.id, "New Question", "last", function (cNode) {
                     console.log(cNode);
+                    $buildTree.jstree('set_type', cNode, 'leaf-direct');
                     buildData.BuildVersionList[currentVersionIDX].addQuestion(cNode.id, cNode.parent);
                 });
             }           
@@ -258,49 +281,49 @@ function QuestionTreeBind() {
 }
 
 
-async function PopulateQuestions() {
+//async function PopulateQuestions() {
 
-    const questionList = await GetQuestions();
-    $('#all-q-datatable').DataTable({
-        data: questionList,
-        "paging": false,
-        "ordering": false,
-        "info": false,
-        "scrollY": "500px",
-        "scrollCollapse": true,
-        "columns": [
-            { "data": "QuestionID" },
-            { "data": "QuestionTitle" },
-        ],
-        "columnDefs": [{
-            "targets": [0],
-            "visible": false,
-        },
-            {
-                "sWidth": "20%",
-                "mData": 1
-                //"targets": [1],
-                //render: $.fn.dataTable.render.ellipsis(30)
-            }
+//    const questionList = await GetQuestions();
+//    $('#all-q-datatable').DataTable({
+//        data: questionList,
+//        "paging": false,
+//        "ordering": false,
+//        "info": false,
+//        "scrollY": "500px",
+//        "scrollCollapse": true,
+//        "columns": [
+//            { "data": "QuestionID" },
+//            { "data": "QuestionTitle" },
+//        ],
+//        "columnDefs": [{
+//            "targets": [0],
+//            "visible": false,
+//        },
+//            {
+//                "sWidth": "20%",
+//                "mData": 1
+//                //"targets": [1],
+//                //render: $.fn.dataTable.render.ellipsis(30)
+//            }
 
-        ],
-        fixedColumns:false
-    });
+//        ],
+//        fixedColumns:false
+//    });
 
-    var table = $('#all-q-datatable').DataTable();
+//    var table = $('#all-q-datatable').DataTable();
 
-    $('#all-q-datatable tbody').on('click', 'tr', function () {
-        let data = table.row(this).data();
-        console.log(data);
-        alert('You clicked on ' + data.QuestionTitle + '\'s row');
-    });
+//    $('#all-q-datatable tbody').on('click', 'tr', function () {
+//        let data = table.row(this).data();
+//        console.log(data);
+//        alert('You clicked on ' + data.QuestionTitle + '\'s row');
+//    });
 
 
-    RefreshQuestionList();
+//    RefreshQuestionList();
     
 
-    //console.log(questionList);
-}
+//    //console.log(questionList);
+//}
 
 
 function RefreshQuestionList() {
@@ -311,15 +334,51 @@ function RefreshQuestionList() {
 
     let thisQHTML = "";
     buildData.BuildVersionList[currentVersionIDX].QuestionList.forEach((e, i, arr) => {
-        thisQHTML += "<li id='" + arr[i].QuestionID + "' class='list-group-item list-group-item-action'><h6 class='QuestionTitle'>" + arr[i].QuestionTitle + "</h6></li>";
+        let classList = "";
+        let additionalQuestionInfo = "<div class='question-props'>";
+
+        //if in tree, lock question
+        if (arr[i].NodeLevel < 0) {
+            classList += " locked ";
+            additionalQuestionInfo += "<span class='prop-item in-tree fab fa-pagelines' data-placement='left' data-toggle='tooltip' title data-original-title='In Build Tree'></span>";
+        } else {
+            additionalQuestionInfo += "<span class='prop-item not-in-tree fas fa-circle-notch' data-placement='left' data-toggle='tooltip' title data-original-title='NOT in Build Tree'></span>";
+        }
+
+        //if conditional
+        if (arr[i].IsConditional) {
+            additionalQuestionInfo += "<span class='prop-item conditional fas fa-sitemap' data-placement='left' data-toggle='tooltip' title data-original-title='Conditional'></span>";
+        } else {
+            additionalQuestionInfo += "<span class='prop-item non-conditional fas fa-grip-lines' data-placement='left' data-toggle='tooltip' title data-original-title='Direct'></span>";
+        }
+
+        additionalQuestionInfo += "</div>";
+
+        thisQHTML += "<li id='" + arr[i].QuestionID + "' class='list-group-item list-group-item-action "
+            + classList + "'><h6 class='QuestionTitle'>" + arr[i].QuestionTitle + "</h6>" + additionalQuestionInfo + "</li>";
     });
 
     $('#this-q-list ul.list').append(thisQHTML);
+    $('[data-toggle="tooltip"]').tooltip();
     var thisQList = new List('this-q-list', options);
 
 
+    $("#this-q-list li").on('click', (e) => {
+        let $selectedQ = $(e.currentTarget);
+        SelectQuestionListItem(e.currentTarget.id);
+
+        if ($selectedQ.find(".question-props .prop-item.in-tree").length > 0) {
+            console.log(e.currentTarget.id);
+            $buildTree
+                .jstree("deselect_all", true)
+                .jstree('select_node', e.currentTarget.id, true);
+           
+           
+        }
+    });
+
     //For making the tree tools questions draggable
-    $('#this-q-list ul.list li').draggable({
+    $('#this-q-list ul.list li').not(".locked").draggable({
         cursor: 'move',
         helper: 'clone',
         start: function (e, ui) {
@@ -356,6 +415,39 @@ function RefreshQuestionList() {
         });
     }
 }
+
+function SelectQuestionListItem(questionItem, scrollToPosition = false) {
+    let $selectedQ = $('#this-q-list li#' + questionItem);
+    $selectedQ.parent().children().removeClass("selected-question");
+    $selectedQ.addClass("selected-question");
+
+
+    let elementIsVisible = isScrolledIntoView($selectedQ, false);
+
+    console.log(elementIsVisible);
+
+    if (!elementIsVisible) {
+        scrollToPosition ?
+            $('#q-tools-content').scrollTo($selectedQ, 100)
+            : null;
+    }    
+}
+
+
+function isScrolledIntoView(elem) {
+    var docViewTop = elem.parent().scrollTop();
+    var docViewBottom = docViewTop + elem.parent().height();
+
+    var elemTop = elem.offset().top;
+    var elemBottom = elemTop + elem.height();
+
+    console.log("elemBottom: " + elemBottom);
+    console.log("docViewBottom: " + docViewBottom);
+    console.log("elemTop: " + elemTop);
+    console.log("docViewTop: " + docViewTop);
+
+    return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+};
 
 
 function popOutQuestion() {
@@ -414,6 +506,7 @@ function ResetQuestionOptions(cntDefault) {
 }
 
 function LoadQuestionInfo(loadID) {
+
     /*Selected Info*/
     let selectedQuestion = $buildTree.jstree('get_node', loadID);
     availableChildren = new Array();
