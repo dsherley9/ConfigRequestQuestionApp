@@ -338,7 +338,7 @@ function RefreshQuestionList() {
         let additionalQuestionInfo = "<div class='question-props'>";
 
         //if in tree, lock question
-        if (arr[i].NodeLevel < 0) {
+        if (arr[i].NodeLevel > 0) {
             classList += " locked ";
             additionalQuestionInfo += "<span class='prop-item in-tree fab fa-pagelines' data-placement='left' data-toggle='tooltip' title data-original-title='In Build Tree'></span>";
         } else {
