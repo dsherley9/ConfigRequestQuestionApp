@@ -21,6 +21,7 @@ namespace ConfigRequestQuestionApp.Models
         private int vUpdtID;
         private string vUpdtName;
         private List<Question> questionList;
+        private Boolean validTree;
 
         //For JSON Tree
         private List<BuildJTree> _jsTree;
@@ -92,7 +93,12 @@ namespace ConfigRequestQuestionApp.Models
             set { questionList = value; }
         }
 
-
+        public Boolean ValidTree
+        {
+            get { return validTree; }
+            set { validTree = value; }
+        }
+        
         //For jsTree Formatted
 
         public List<BuildJTree> JSTree
@@ -109,6 +115,9 @@ namespace ConfigRequestQuestionApp.Models
         {
             questionList = new List<Question>();
             _jsTree = new List<BuildJTree>();
+
+            //temp set tree valid to false
+            validTree = false;
         }
 
         #endregion

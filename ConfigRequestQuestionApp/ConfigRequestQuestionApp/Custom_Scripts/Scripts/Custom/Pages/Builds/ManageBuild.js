@@ -24,10 +24,13 @@ var $optionsContainer = $('#q-options-container');
 var $questionChildrenDrpDwn = $('#q-options-list');
 var $questionTabSpinner = $('#q-tab-spinner');
 var $questionTabLabel = $('#q-tab-label');
+var $loadedQID = $("#loaded-q-id");
 
 var $questionTitleTxt = $('input#question-title');
 var $requiredToggle = $('#required-toggle');
 var $conditionalToggle = $('#conditional-toggle');
+var $saveQuestionBtn = $('#save-question-btn');
+
 
 /*-------------------------------------------------------------
  * Form Objects
@@ -155,8 +158,17 @@ function QuestionFormBind() {
         //console.log($(e.currentTarget).val());
         $(e.currentTarget).val() == 2 || $(e.currentTarget).val() == 3 || $(e.currentTarget).val() == 4 ? $optionsContainer.show() : $optionsContainer.hide();
     });
+
+    $saveQuestionBtn.on('click', SaveQuestion);
+
 }
 
+
+async function SaveQuestion() {
+
+    errorNotify("Saving Question " + $loadedQID.html(), "success");
+    //alert($loadedQID.html());
+}
 
 function QuestionTreeBind() {
 
@@ -266,11 +278,17 @@ function QuestionTreeBind() {
             }
             else {
                 console.log(nodeData);
-                $buildTree.jstree('create_node', nodeData.id, "New Question", "last", function (cNode) {
+                //largest ID + 1
+                let newID = buildData.BuildVersionList[currentVersionIDX].QuestionList.reduce((max, p) => p.QuestionID > max ? p.QuestionID : max, 0) + 1;
+                $buildTree.jstree('create_node', nodeData.id, { id: newID, text: "New Question" }, "last", function (cNode) {
                     console.log(cNode);
-                    $buildTree.jstree('set_type', cNode, 'leaf-direct');
-                    buildData.BuildVersionList[currentVersionIDX].addQuestion(cNode.id, cNode.parent);
+                    $buildTree.jstree('set_type', cNode, 'leaf-direct');                    
+                    buildData.BuildVersionList[currentVersionIDX].addQuestion(parseInt(cNode.id), parseInt(cNode.parent));
                 });
+
+                //NEED TO UPDATE FUNCTION FOR THIS TO ACCOUNT FOR SINGLE QUESTIONS REFRESH
+                RefreshQuestionList(newID);
+
             }           
         } else {
             errorNotify("Please select a node to add a question to.", "danger");
@@ -326,7 +344,7 @@ function QuestionTreeBind() {
 //}
 
 
-function RefreshQuestionList() {
+function RefreshQuestionList(refreshID = 0) {
 
     var options = {
         valueNames: ['QuestionTitle']
@@ -334,6 +352,13 @@ function RefreshQuestionList() {
 
     let thisQHTML = "";
     buildData.BuildVersionList[currentVersionIDX].QuestionList.forEach((e, i, arr) => {
+
+        //if refreshID is specified, it's a request to add just a single question
+        //return if not that question
+        if (refreshID !== 0 && arr[i].QuestionID !== refreshID) {
+            return;
+        } 
+
         let classList = "";
         let additionalQuestionInfo = "<div class='question-props'>";
 
@@ -507,6 +532,8 @@ function ResetQuestionOptions(cntDefault) {
 
 function LoadQuestionInfo(loadID) {
 
+    $loadedQID.html(loadID);
+
     /*Selected Info*/
     let selectedQuestion = $buildTree.jstree('get_node', loadID);
     availableChildren = new Array();
@@ -584,7 +611,7 @@ async function LoadBuildInfo() {
             buildData.BuildVersionList[i].addQuestion = function (nID, pID) {
                 let newQ = Object.assign({}, buildData.templateVersion.QuestionList[0]);
                 newQ.QuestionTitle = "New Question";
-                newQ.parentQID = pID;
+                newQ.ParentQID = pID;
                 newQ.QuestionID = nID;
                 newQ.QTypeCD = 1;
                 newQ.QTypeMeaning = "FREETEXT";
@@ -610,6 +637,9 @@ async function LoadBuildInfo() {
         //Build Name
         $buildTitleTxt.text(buildData.CurrentBuildName);
         $buildNameTxt.val(buildData.BuildVersionList[currentVersionIDX].BuildName);
+
+        //Valid Tree
+        $('#valid-tree-id h6 span').html(String(buildData.BuildVersionList[currentVersionIDX].ValidTree));
 
         //Solution [MAY NEED TO IMPLEMENT ASYNC/AWAIT ON THIS FUNCTION, so drop down is poplulated before setting value. Working for now.]
         $solutionDrpDwn.selectpicker('val', buildData.BuildVersionList[currentVersionIDX].SolutionCD);

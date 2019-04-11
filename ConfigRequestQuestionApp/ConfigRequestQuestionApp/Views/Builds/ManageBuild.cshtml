@@ -15,6 +15,9 @@
                 <div class="d-flex flex-row row manage-build-header align-items-center">
                     <div class="col-sm-12 col-lg-10 manage-build-title">
                         <h2>Loading...</h2>
+                        <div id="valid-tree-id">
+                            <h6>Valid Tree: <span></span></h6>
+                        </div>                    
                     </div>
                     <div class="col-sm-12 col-lg-2 align-content-end">
                         <div class="versions-drp-dwn col-12">
@@ -139,6 +142,7 @@
                                         </div>
                                         <div class="question-content col-12">
                                             <div class="d-flex flex-row flex-wrap">
+                                                <div id="loaded-q-id" class="d-none"></div>
                                                 <div class="col-sm-12 col-lg-12 manage-build-field">
                                                     <label for="question-title">Question:</label>
                                                     <input class="form-control" id="question-title" type="text" value="">

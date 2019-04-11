@@ -101,6 +101,12 @@ namespace ConfigRequestQuestionApp.Controllers
             return;
         }
 
+        [HttpPost]
+        public int SaveQuestion(Question saveQ)
+        {
+            return 0;
+        }
+
         #endregion
 
         #region Load Methods
