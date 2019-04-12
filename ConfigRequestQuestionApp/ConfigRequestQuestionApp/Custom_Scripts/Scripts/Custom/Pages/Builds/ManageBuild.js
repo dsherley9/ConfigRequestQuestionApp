@@ -166,7 +166,42 @@ function QuestionFormBind() {
 
 async function SaveQuestion() {
 
-    errorNotify("Saving Question " + $loadedQID.html(), "success");
+    let qIDX = parseInt($loadedQID.html());
+    errorNotify("Saving Question Index - " + qIDX , "info");
+
+    buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QuestionTitle = $questionTitleTxt.val();
+
+    let qData = {};
+    qData.SaveQ = buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX];
+    qData.BuildVersionID = buildData.BuildVersionList[currentVersionIDX].VersionId;
+    console.log(qData);
+
+    $.ajax({
+        type: "POST",
+        url: "/Builds/SaveQuestion",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(qData),
+        dataType: "json",
+        error: err => console.log(err),
+        success: (resp) => {
+            if (resp.QuestionID != buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QuestionID) {
+
+                Object.assign(buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX], resp);
+                console.log('Changing question object because of correct ID.');
+                console.log(buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX]);
+
+            }
+
+            console.log('response below');
+            console.log(resp);
+            errorNotify("Save successful!", "success");
+        }
+        
+        
+    });    
+
+
+
     //alert($loadedQID.html());
 }
 
@@ -532,13 +567,15 @@ function ResetQuestionOptions(cntDefault) {
 
 function LoadQuestionInfo(loadID) {
 
-    $loadedQID.html(loadID);
+    
 
     /*Selected Info*/
     let selectedQuestion = $buildTree.jstree('get_node', loadID);
     availableChildren = new Array();
 
     let qIDX = buildData.BuildVersionList[currentVersionIDX].QuestionList.findIndex(x => x.QuestionID == loadID);
+    //$loadedQID.html(loadID);
+    $loadedQID.html(qIDX); //<-Use Index Vs. ID
     let qTitle = buildData.BuildVersionList[currentVersionIDX].QuestionList[qIDX].QuestionTitle;
     //get children so if the end user wants to make conditional, they know what questions they can select;
     availableChildren.splice(0, availableChildren.length);//resets array, and references to array
@@ -613,6 +650,12 @@ async function LoadBuildInfo() {
                 newQ.QuestionTitle = "New Question";
                 newQ.ParentQID = pID;
                 newQ.QuestionID = nID;
+                newQ.NodeLevel = (buildData.BuildVersionList[currentVersionIDX]
+                    .QuestionList[
+                        buildData.BuildVersionList[currentVersionIDX]
+                        .QuestionList.findIndex(x => x.QuestionID === parseInt(pID))
+                    ]
+                    .NodeLevel + 1);
                 newQ.QTypeCD = 1;
                 newQ.QTypeMeaning = "FREETEXT";
                 this.QuestionList.push(newQ);

@@ -102,9 +102,10 @@ namespace ConfigRequestQuestionApp.Controllers
         }
 
         [HttpPost]
-        public int SaveQuestion(Question saveQ)
+        public string SaveQuestion(Question SaveQ, int BuildVersionID)
         {
-            return 0;
+            SaveQ.Save(BuildVersionID);
+            return new JavaScriptSerializer().Serialize(SaveQ);
         }
 
         #endregion
